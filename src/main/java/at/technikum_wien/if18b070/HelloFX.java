@@ -1,5 +1,6 @@
-package at.`technikum-wien`.if18b070
-package org.openjfx;
+package at.technikum_wien.if18b070;
+
+
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,7 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 
-public class MainApp extends Application {
+public class HelloFX extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
