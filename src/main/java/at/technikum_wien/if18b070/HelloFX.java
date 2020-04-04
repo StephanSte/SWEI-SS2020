@@ -1,7 +1,5 @@
 package at.technikum_wien.if18b070;
 
-
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
