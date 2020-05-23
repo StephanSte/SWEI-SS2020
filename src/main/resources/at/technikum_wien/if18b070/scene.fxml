@@ -1,11 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 
-
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.technikum_wien.if18b070.FXMLController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.technikum_wien.if18b070.FXMLController">
     <children>
-        <Label fx:id="label" text="Label" />
+      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <SplitPane dividerPositions="0.5" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <Button fx:id="clickme" mnemonicParsing="false" onAction="#generateRandom" text="Click me" />
+                          <Label fx:id="label" layoutX="-3.0" layoutY="44.0" prefHeight="97.0" prefWidth="68.0" />
+                        <ScrollBar layoutY="384.0" prefHeight="11.0" prefWidth="296.0" />
+                     </children>
+                  </AnchorPane>
+                <AnchorPane fx:id="rightSide" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <ImageView fx:id="imageView" fitHeight="119.0" fitWidth="214.0" layoutX="41.0" managed="false" pickOnBounds="true" preserveRatio="true" />
+                        <TextField fx:id="textField" layoutX="74.0" layoutY="138.0" promptText="Insert" />
+                        <Button fx:id="insertButton" layoutX="122.0" layoutY="199.0" mnemonicParsing="false" onAction="#selectAll" text="Button" />
+                        <Label fx:id="textLabel" layoutX="89.0" layoutY="257.0" prefHeight="17.0" prefWidth="149.0" text="Label" />
+                     </children>
+                  </AnchorPane>
+              </items>
+            </SplitPane>
+         </children>
+      </AnchorPane>
     </children>
 </StackPane>
