@@ -14,7 +14,11 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12';
+
+    // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.31.1'
+
+    testImplementation 'junit:junit:4.13'
 }
 
 sourceCompatibility = 1.14
@@ -24,5 +28,5 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
-mainClassName = 'at.technikum_wien.if18b070.HelloFX'
+mainClassName = 'at.technikum_wien.if18b070.Main'
 

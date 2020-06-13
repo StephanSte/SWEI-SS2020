@@ -1,80 +1,36 @@
 package at.technikum_wien.if18b070.Models;
 
-import javax.imageio.plugins.tiff.ExifGPSTagSet;
-
 public class PictureModel {
+    //picture
     private String path;
-    //EXIF
-    private String fileformat;
-    private String dateCreated;
-    private String country;
-    private String byLLine;
-    private String caption;
+    private String photographerID;
+
+    private PhotographerModel photographer = new PhotographerModel();
+
+    public PhotographerModel getPhotographer() { return photographer; }
+    public void setPhotographer(PhotographerModel photographer) { this.photographer = photographer; }
+
+    public PictureModel(String path) { this.setPath(path); }
+    //path
+    public String getPath() { return path; }
+    public void setPath(String path) {this.path = path; }
+
+    public String getPhotographerID() { return photographerID; }
+    public void setPhotographerID(String photographerID) { this.photographerID = photographerID; }
+
     //IPTC
-    private String catergory;
+    private String category;
     private String urgency;
     private String keywords;
     private String city;
     private String headline;
 
-
-
-
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getFileformat() {
-        return fileformat;
-    }
-
-    public void setFileformat(String fileformat) {
-        this.fileformat = fileformat;
-    }
-
-    public String getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(String dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getByLLine() {
-        return byLLine;
-    }
-
-    public void setByLLine(String byLLine) {
-        this.byLLine = byLLine;
-    }
-
-    public String getCaption() {
-        return caption;
-    }
-
-    public void setCaption(String caption) {
-        this.caption = caption;
-    }
-
     public String getCatergory() {
-        return catergory;
+        return category;
     }
 
-    public void setCatergory(String catergory) {
-        this.catergory = catergory;
+    public void setCatergory(String category) {
+        this.category = category;
     }
 
     public String getUrgency() {
@@ -108,4 +64,56 @@ public class PictureModel {
     public void setHeadline(String headline) {
         this.headline = headline;
     }
+
+
+
+    //EXIF
+    private String fileformat;
+    private String dateCreated;
+    private String country;
+    private String iso;
+    private String caption;
+
+    public String getFileformat() {
+        return fileformat;
+    }
+
+    public void setFileformat(String fileformat) {
+        this.fileformat = fileformat;
+    }
+
+    public String getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getIso() {
+        return iso;
+    }
+
+    public void setIso(String iso) {
+        this.iso = iso;
+    }
+
+    public String getCaption() {
+        return caption;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
+
+
+
 }

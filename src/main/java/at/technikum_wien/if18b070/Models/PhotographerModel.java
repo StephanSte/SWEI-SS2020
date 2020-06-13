@@ -4,9 +4,10 @@ import javax.imageio.plugins.tiff.ExifGPSTagSet;
 
 public class PhotographerModel {
     private String name;
-    private String ppath;
+    private String birthday;
     private String surname;
     private String country;
+
 
     public String getName() {
         return name;
@@ -16,20 +17,20 @@ public class PhotographerModel {
         this.name = name;
     }
 
-    public String getPpath() {
-        return ppath;
-    }
-
-    public void setPpath(String ppath) {
-        this.ppath = ppath;
-    }
-
     public String getSurname() {
         return surname;
     }
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 
     public String getCountry() {

@@ -1,43 +1,142 @@
 package at.technikum_wien.if18b070;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
+
+import at.technikum_wien.if18b070.Models.MockPictureModels;
+import at.technikum_wien.if18b070.Models.PictureModel;
+import at.technikum_wien.if18b070.PresentationModels.PictureViewModel;
+import at.technikum_wien.if18b070.Service.DBService;
+
 import javafx.event.ActionEvent;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
+import javafx.scene.layout.HBox;
+
+import javax.swing.JFileChooser;
+import java.io.File;
+import java.util.List;
+
 
 public class FXMLController implements Initializable {
 
     @FXML
-    public ImageView image;
-    @FXML
-    public AnchorPane rightSide;
-    @FXML
     private Label label;
-
-    public HashMap<String,String> IPTC;
-    public HashMap<String,String> EXIF;
+    @FXML
     public TextField textField;
+    @FXML
     public Label textLabel;
+    @FXML
+    public MenuBar topMenuBar;
+    @FXML
+    public TextField searchBar;
+    @FXML
+    public ImageView imgActive;
+    @FXML
+    public AnchorPane imgActiveContainer;
+    @FXML
+    public HBox imgScrollPaneHBox;
+    @FXML
+    private Button button;
+    @FXML
+    private MenuItem ChooseFile;
 
 
-    //**************************************DB Functions**********************************************************
+    private PictureViewModel PictureViewModel;
+    private List<PictureViewModel> ListofModels = new ArrayList<PictureViewModel>();
+    //private List<PictureModel> pictures;
+
+
+
+    private void prep(){
+        String javaVersion = System.getProperty("java.version");
+        String javafxVersion = System.getProperty("javafx.version");
+        this.label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
+        // img
+        this.imgActive.fitWidthProperty().bind(this.imgActiveContainer.widthProperty());
+        this.imgActive.fitHeightProperty().bind(this.imgActiveContainer.heightProperty());
+    }
+
+    //**************************************** loadAllPictures ******************************************************
+    private void loadPicturesFromDB(){
+        //TODO: make this reality
+        //DBService database = new DBService();
+        //database.getAllPictures();
+    }
+
+    //private void loadPicturesFromMock(){ this.pictures = new MockPictureModels().getPictureModels(); }
+
+    private void loadAllPictures(){
+        //DBService getAllPictures
+        for(String path: new MockPictureModels().getAllPaths()){
+            ListofModels.add(new PictureViewModel(new PictureModel(path)));
+        }
+    }
+    
+    //****************************** Fill Scroll Pane with all Pictures *******************************************
+    private void fillScrollPane() {
+
+        for(PictureViewModel pvm : ListofModels) {
+
+            //System.out.println(pvm.getPath());
+
+            Image img = new Image("file:" + pvm.path.getValue());
+            ImageView imgView = new ImageView(img);
+            imgView.setFitWidth(200);
+            imgView.setPreserveRatio(true);
+
+
+            imgView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                //set new PictureModel for the active ViewModel
+                PictureViewModel.setPictureModel(new PictureModel(pvm.path.getValue()));
+                PictureViewModel.updateProperties();
+
+                updateActiveImage();
+                event.consume();
+            });
+            imgScrollPaneHBox.getChildren().add(imgView);
+        }
+    }
+
+    //*********************** create and update Active Picture that is displayed *************************************
+    private void initializeActivePicture() {
+
+        // set activePictureViewModel
+        PictureViewModel = new PictureViewModel(
+                // create new PictureModel
+                new PictureModel(ListofModels.get(0).path.getValue())
+        );
+
+        updateActiveImage();
+    }
+
+    private void updateActiveImage(){
+        Image image = null;
+        try {
+            image = new Image(new FileInputStream(PictureViewModel.path.getValue()));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        imgActive.setImage(image);
+    }
+
+    //TODO: change to DBService connection
+    //***************************************put here temporarily*******************************************************
     private Connection connect() {
         // SQLite connection string
         String url = "jdbc:sqlite:SWEIDB.db";
@@ -48,84 +147,6 @@ public class FXMLController implements Initializable {
             System.out.println(e.getMessage());
         }
         return conn;
-    }
-
-    public void insert(ActionEvent event) {
-        createNewTable();
-
-        String insertName = textField.getText();
-        textLabel.setText(textField.getText());
-        //InputStream in = getClass().getResourceAsStream("/com/bar/resources/at/technikum_wien/if18b070/bilder"+path);
-
-        int insertId = 0;
-
-        String sql = "INSERT INTO photographer (id,name) VALUES(?,?)";
-
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            //pstmt.setInt(1, insertId);
-            pstmt.setString(2, insertName);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public static void createNewTable() {
-        // SQLite connection string
-        String url = "jdbc:sqlite:SWEIDB.db";
-
-        // SQL statement for creating a new table
-        String sql = "CREATE TABLE IF NOT EXISTS photographer ("
-                + " id integer PRIMARY KEY,"
-                + " name text NOT NULL,"
-                + " ppath text"
-                + " );";
-
-        String IPTC = "CREATE TABLE IF NOT EXISTS ITPC (\n"
-                + "id integer PRIMARY KEY,\n"
-                + "thing1 text ,\n"
-                + "thing2 text ,\n"
-                + "thing3 text\n"
-                + ");";
-        String EXIF = "CREATE TABLE IF NOT EXISTS ITPC (\n"
-                + "id integer PRIMARY KEY,\n"
-                + "thing1 text ,\n"
-                + "thing2 text ,\n"
-                + "thing3 text\n"
-                + ");";
-
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()) {
-            // create a new table
-            stmt.execute(sql);
-            stmt.execute(IPTC);
-            stmt.execute(EXIF);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void selectAll(){
-        String sql = "SELECT id, name,ppath FROM photographer";
-
-        try (Connection conn = this.connect();
-             Statement stmt  = conn.createStatement();
-             ResultSet rs    = stmt.executeQuery(sql)){
-
-            // loop through the result set
-            while (rs.next()) {
-                System.out.println(rs.getInt("id") +  "\t" +
-                        rs.getString("name") + "\t" +
-                        rs.getString("ppath"));
-
-                textLabel.setText(rs.getInt("id") +  "\t" +
-                        rs.getString("name") + "\t" +
-                        rs.getString("ppath"));
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
     }
 
     //***************************************Random Functions*******************************************************
@@ -140,14 +161,18 @@ public class FXMLController implements Initializable {
         //System.out.println("Program is running");
     }
 
+
     //*****************************************Initialisation**************************************************************
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        String javaVersion = System.getProperty("java.version");
-        String javafxVersion = System.getProperty("javafx.version");
-        label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
+        prep();
+        //Connection here?
 
-        //image.fitHeightProperty().bind(rightSide.heightProperty());
-        //image.fitWidthProperty().bind(rightSide.widthProperty());
+        loadAllPictures();
+        //loadPicturesFromMock();
+
+        fillScrollPane();
+        initializeActivePicture();
     }
+
 }
