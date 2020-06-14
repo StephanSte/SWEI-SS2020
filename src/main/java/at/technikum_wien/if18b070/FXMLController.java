@@ -1,36 +1,26 @@
 package at.technikum_wien.if18b070;
 
-import java.awt.*;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.net.URL;
-import java.sql.*;
-import java.util.*;
-
-import at.technikum_wien.if18b070.Models.MockPictureModels;
+import at.technikum_wien.if18b070.BusinessLayer.FileHandler;
 import at.technikum_wien.if18b070.Models.PictureModel;
 import at.technikum_wien.if18b070.PresentationModels.PictureViewModel;
-import at.technikum_wien.if18b070.Service.DBService;
-
 import javafx.event.ActionEvent;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 
-import javax.swing.JFileChooser;
-import java.io.File;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.ResourceBundle;
 
 
 public class FXMLController implements Initializable {
@@ -68,8 +58,7 @@ public class FXMLController implements Initializable {
         String javafxVersion = System.getProperty("javafx.version");
         this.label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
         // img
-        this.imgActive.fitWidthProperty().bind(this.imgActiveContainer.widthProperty());
-        this.imgActive.fitHeightProperty().bind(this.imgActiveContainer.heightProperty());
+
     }
 
     //**************************************** loadAllPictures ******************************************************
@@ -79,11 +68,11 @@ public class FXMLController implements Initializable {
         //database.getAllPictures();
     }
 
-    //private void loadPicturesFromMock(){ this.pictures = new MockPictureModels().getPictureModels(); }
+       private void loadAllPictures(){
 
-    private void loadAllPictures(){
-        //DBService getAllPictures
-        for(String path: new MockPictureModels().getAllPaths()){
+
+
+        for(String path: new FileHandler().getAllPaths()){
             ListofModels.add(new PictureViewModel(new PictureModel(path)));
         }
     }
@@ -126,12 +115,7 @@ public class FXMLController implements Initializable {
     }
 
     private void updateActiveImage(){
-        Image image = null;
-        try {
-            image = new Image(new FileInputStream(PictureViewModel.path.getValue()));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        Image image = new Image("file:" + PictureViewModel.path.getValue());
         imgActive.setImage(image);
     }
 
@@ -166,10 +150,12 @@ public class FXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         prep();
-        //Connection here?
 
         loadAllPictures();
         //loadPicturesFromMock();
+
+        this.imgActive.fitWidthProperty().bind(this.imgActiveContainer.widthProperty());
+        this.imgActive.fitHeightProperty().bind(this.imgActiveContainer.heightProperty());
 
         fillScrollPane();
         initializeActivePicture();

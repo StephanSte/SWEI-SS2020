@@ -1,5 +1,6 @@
 package at.technikum_wien.if18b070;
 
+import at.technikum_wien.if18b070.Service.DBService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,6 +14,9 @@ import java.io.File;
 
 
 public class Main extends Application {
+    public static File BILDER = new File("./src/main/resources/at/technikum_wien/if18b070/bilder");
+    //DB here
+    public static DBService DATABASE;
 
     @Override
     public void start(Stage stage) throws Exception {

@@ -10,7 +10,7 @@ import java.io.File;
 public class PictureViewModel {
 
     public PictureModel picture;
-        //PATH
+    //PATH
     public SimpleStringProperty path;
     //EXIF
     public SimpleStringProperty fileformat;
