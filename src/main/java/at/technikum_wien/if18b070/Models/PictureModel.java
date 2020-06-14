@@ -69,7 +69,6 @@ public class PictureModel {
 
     //EXIF
     private String fileformat;
-    private String dateCreated;
     private String country;
     private String iso;
     private String caption;
@@ -80,14 +79,6 @@ public class PictureModel {
 
     public void setFileformat(String fileformat) {
         this.fileformat = fileformat;
-    }
-
-    public String getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(String dateCreated) {
-        this.dateCreated = dateCreated;
     }
 
     public String getCountry() {
