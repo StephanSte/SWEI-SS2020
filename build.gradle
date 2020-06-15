@@ -19,6 +19,10 @@ dependencies {
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.31.1'
 
     testImplementation 'junit:junit:4.13'
+
+
+    compile group: 'org.tinylog', name: 'tinylog-api', version: '2.1.2'
+    compile group: 'org.tinylog', name: 'tinylog-impl', version: '2.1.2'
 }
 
 sourceCompatibility = 1.14

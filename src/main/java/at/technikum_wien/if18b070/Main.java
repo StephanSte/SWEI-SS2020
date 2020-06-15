@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.sql.SQLException;
 
 
 public class Main extends Application {
@@ -31,7 +32,8 @@ public class Main extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+        DATABASE = new DBService();
         launch(args);
     }
 

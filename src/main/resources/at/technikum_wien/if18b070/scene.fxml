@@ -15,16 +15,19 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.TextField?>
+<?import javafx.geometry.Insets?>
 <BorderPane id="rootPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.technikum_wien.if18b070.FXMLController">
     <top>
         <VBox>
             <MenuBar fx:id="topMenuBar">
                 <Menu text="File">
-                    <MenuItem fx:id="ChooseFile" text="Choose File" />
+                    <MenuItem fx:id="ChooseFile" text="Choose File (doesn`t work)" />
                 </Menu>
 
                 <Menu text="Edit">
-                    <MenuItem text="myItem" />
+                    <MenuItem fx:id="newPhotographer" text="new Photographer" />
+                    <MenuItem fx:id="getAllPhotographers" text="getAllPhotographers" />
                 </Menu>
 
                 <Menu text="Options">
@@ -40,21 +43,82 @@
 
     <center>
         <SplitPane dividerPositions="0.5" orientation="VERTICAL">
-            <SplitPane dividerPositions="0.5" orientation="HORIZONTAL">
+            <SplitPane dividerPositions="0.5">
                 <AnchorPane fx:id="imgActiveContainer" minHeight="100" minWidth="100">
                     <ImageView fx:id="imgActive" managed="false" preserveRatio="true" />
                 </AnchorPane>
                 <TabPane minWidth="-Infinity">
-                    <Tab closable="false" text="IPTC">
 
+                    <!-- IPTC Tab -->
+
+                    <Tab closable="false" text="IPTC">
+                        <ScrollPane>
+                            <HBox>
+
+                                <VBox>
+                                    <Label>Category: </Label>
+                                    <Label>Urgency: </Label>
+                                    <Label>City: </Label>
+                                    <Label>Headline: </Label>
+
+                                </VBox>
+
+                                <VBox>
+                                    <TextField fx:id="iptc_category" />
+                                    <TextField fx:id="iptc_urgency" />
+                                    <TextField fx:id="iptc_city" />
+                                    <TextField fx:id="iptc_headline" />
+
+
+                                    <Button fx:id="SaveIPTCButton">Save IPTC</Button>
+                                </VBox>
+                            </HBox>
+                        </ScrollPane>
                     </Tab>
+
+                    <!-- EXIF Tab -->
 
                     <Tab closable="false" text="EXIF">
+                        <ScrollPane>
+                            <HBox>
 
+                                <VBox>
+                                    <Label>Fileformat: </Label>
+                                    <Label>Country: </Label>
+                                    <Label>Iso: </Label>
+                                    <Label>Caption: </Label>
+                                </VBox>
+
+                                <VBox>
+                                    <TextField fx:id="exif_fileformat" />
+                                    <TextField fx:id="exif_country" />
+                                    <TextField fx:id="exif_iso" />
+                                    <TextField fx:id="exif_caption" />
+                                </VBox>
+                            </HBox>
+                        </ScrollPane>
                     </Tab>
 
+                    <!-- Photographer Tab -->
                     <Tab closable="false" text="Photographer">
+                        <ScrollPane>
+                            <HBox>
 
+                                <VBox>
+                                    <Label>Name: </Label>
+                                    <Label>Surname: </Label>
+                                    <Label>Birthday: </Label>
+                                    <Label>Country: </Label>
+                                </VBox>
+
+                                <VBox>
+                                    <TextField fx:id="name" />
+                                    <TextField fx:id="surname" />
+                                    <TextField fx:id="birthday" />
+                                    <TextField fx:id="country" />
+                                </VBox>
+                            </HBox>
+                        </ScrollPane>
                     </Tab>
                 </TabPane>
             </SplitPane>
@@ -67,6 +131,7 @@
     <Label fx:id="label" />
 
     <bottom>
-        <Button fx:id="button" />
+        <!-- <Button fx:id="button" />
+        -->
     </bottom>
 </BorderPane>

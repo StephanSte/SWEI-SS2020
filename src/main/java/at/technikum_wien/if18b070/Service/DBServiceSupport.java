@@ -4,6 +4,7 @@ import at.technikum_wien.if18b070.Models.PhotographerModel;
 import at.technikum_wien.if18b070.Models.PictureModel;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public interface DBServiceSupport {
@@ -20,6 +21,7 @@ public interface DBServiceSupport {
     public PictureModel getPictureModelFromPath(String path);
     public PhotographerModel getPhotographerForImage(File image);
     public Collection<PhotographerModel> getPhotographers();
+    public ArrayList<String> getPathsFromSearchString(String search);
 
     public void close();
 }

@@ -1,31 +1,19 @@
 package at.technikum_wien.if18b070.Service;
 
+import at.technikum_wien.if18b070.Main;
 import at.technikum_wien.if18b070.Models.PhotographerModel;
 import at.technikum_wien.if18b070.Models.PictureModel;
 
 import java.io.File;
 import java.sql.*;
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.logging.Logger;
-
-
-
-
-
-
+import java.util.*;
+import org.tinylog.Logger;
 
 
 public class DBService implements DBServiceSupport{
     private static DBService instance;
-
-    private final Logger logger = Logger.getLogger("DBService");
+    private Connection conn;
     private Dictionary<String, PreparedStatement> preparedStatements = new Hashtable<>();
-
-    public static DBService getInstance() {
-        return instance;
-    }
     
     private static final String CREATE_PHOTOGRAPHER = "CREATE TABLE IF NOT EXISTS photographer (\n"
             + " id integer PRIMARY KEY,\n"
@@ -34,8 +22,6 @@ public class DBService implements DBServiceSupport{
             + " birthday date NOT NULL,\n"
             + " country text NOT NULL"
             + " );";
-
-
     private static final String CREATE_PICTURE = "CREATE TABLE IF NOT EXISTS picture (\n"
             + "id integer PRIMARY KEY,\n"
             + "path text NOT NULL,\n"
@@ -49,48 +35,51 @@ public class DBService implements DBServiceSupport{
             + "IPTC_headline text, \n"
             + "photographerID int"
             + ");";
-
-    private static final String INSERT_IMAGE = "INSERT INTO picture VALUES(?,?,?,?,?,?,?,?,?,?)";
+    private static final String INSERT_IMAGE = "INSERT OR IGNORE INTO picture VALUES(?,?,?,?,?,?,?,?,?,?)";
     private static final String INSERT_IPTC = "INSERT INTO picture(IPTC_CATEGORY, IPTC_URGENCY, IPTC_CITY, IPTC_HEADLINE) VALUES(?,?,?,?)";
     private static final String INSERT_EXIF = "INSERT INTO picture(EXIF_fileformat, EXIF_country, EXIF_ISO, EXIF_CAPTION) VALUES(?,?,?,?)";
     private static final String INSERT_PHOTOGRAPHER = "INSERT INTO photographer VALUES(?,?,?,?)";
-
     private static final String UPDATE_PHOTOGRAPHER_FOR_IMAGE = "UPDATE picture SET photographerID = ? WHERE path = ?";
-    private static final String UPDATE_IPTC = "UPDATE picture SET IPTC_CATEGORY = ?, IPTC_URGENCY, IPTC_CITY, IPTC_HEADLINE WHERE path = ?";
+    private static final String UPDATE_IPTC = "UPDATE picture SET IPTC_CATEGORY = ?, IPTC_URGENCY = ?, IPTC_CITY = ?, IPTC_HEADLINE = ? WHERE path = ?";
     private static final String UPDATE_PHOTOGRAPHER = "UPDATE photographer SET name = ?, surname = ?, birthday = ?, country = ? WHERE id = ?";
-
+    //get the Exif Data of the displayed image
     private static final String RETURN_EXIF_FROM_IMAGE = "SELECT * FROM picture(EXIF_fileformat, EXIF_country, EXIF_ISO, EXIF_CAPTION) WHERE img_path = ?";
+    //get the Iptc Data of the displayed image
     private static final String RETURN_IPTC_FROM_IMAGE = "SELECT * FROM picture(IPTC_CATEGORY, IPTC_URGENCY, IPTC_CITY, IPTC_HEADLINE) WHERE img_path = ?";
+    //get the Photographer of the displayed image
     private static final String RETURN_PHOTOGRAPHER_FROM_IMAGE = "SELECT * FROM photographer WHERE id = (RETURN photographer FROM images WHERE path = ?)";
+    //get All Photographers
     private static final String RETURN_PHOTOGRAPHERS = "SELECT * FROM photographer";
+    // whole picture selection
     private static final String RETURN_PICTURE_BY_PATH = "SELECT * FROM picture WHERE path = ?";
-
     private static final String getPhotographerByName = "select * from PHOTOGRAPHER where NAME = ? and SURNAME = ?";
+    // SELECT STATEMENTS
+    // selection by filename
+    private static final String SELECT_PATHS_BY_FILENAME = "SELECT path FROM pictures WHERE path LIKE ?";
+    // selection by EXIF
+    private static final String SELECT_PATHS_BY_CATEGORY = "SELECT path FROM pictures WHERE iptc_category LIKE ?";
+    private static final String SELECT_PATHS_BY_URGENCY = "SELECT path FROM pictures WHERE iptc_urgency LIKE ?";
+    private static final String SELECT_PATHS_BY_CITY = "SELECT path FROM pictures WHERE iptc_city LIKE ?";
+    private static final String SELECT_PATHS_BY_HEADLINE = "SELECT path FROM pictures WHERE iptc_headline LIKE ?";
+
+    private static final String DELETE_DATABASE = "DELETE FROM picture";
 
 
 
-    //this may not work
-    private static final String getPictureByID = "select * from PICTURE join PHOTOGRAPHER P on PICTURE.PHOTOGRAPHER_ID = P.ID where PICTURE.ID = ?";
-
-    private static final String getIPTCFromPicture = "select IPTC_category, IPTC_urgency, IPTC_city,IPTC_headline from PICTURE where ID = ?";
-    private static final String getEXIFFromPicture = "select EXIF_FILEFORMAT, EXIF_COUNTRY, EXIF_ISO, EXIF_CAPTION from PICTURE where ID = ?";
-
-    private static final String getPictureID = "select ID from PICTURE where path = ?";
-    private static final String getPhotographerId = "select ID from PHOTOGRAPHER where NAME = ? and SURNAME = ?";
-
-
-    private Connection conn;
-    DBService(String filename) throws SQLException {
+    public DBService() throws SQLException {
         try {
-            conn = DriverManager.getConnection("jdbc:sqlite" + filename);
+            conn = DriverManager.getConnection("jdbc:sqlite:SWEIDB.db");
+            Logger.debug("Successfully established SQLite database connection.");
 
-            initializeDatabase();
+            //initializeDatabase();
         }catch (SQLException e){
-            e.printStackTrace();
+            Logger.debug("Failed to establish SQLite database connection.");
+            Logger.trace(e);
         }
+        createTables();
     }
 
-    private void initializeDatabase() throws SQLException {
+    /*private void initializeDatabase() throws SQLException {
         DatabaseMetaData metaData = conn.getMetaData();
         ResultSet result = metaData.getTables(null, null, null, new String[]{"TABLE"});
         if(result.next()){
@@ -98,6 +87,10 @@ public class DBService implements DBServiceSupport{
         }else {
             createTables();
         }
+    }*/
+
+    public static DBService getInstance() {
+        return instance;
     }
 
     private void createTables() throws SQLException {
@@ -123,7 +116,7 @@ public class DBService implements DBServiceSupport{
             statement.setString(7,picture.getUrgency());
             statement.setString(8,picture.getCity());
             statement.setString(9,picture.getHeadline());
-            statement.setString(10,picture.getPhotographerID());
+            statement.setNull(10,picture.getPhotographerID());
             return statement.execute();
 
         } catch (SQLException e) {
@@ -185,7 +178,7 @@ public class DBService implements DBServiceSupport{
         try{
             PreparedStatement statement = conn.prepareStatement(UPDATE_PHOTOGRAPHER_FOR_IMAGE);
             statement.setString(1,picture.getPath());
-            statement.setString(2,picture.getPhotographerID());
+            statement.setInt(2,picture.getPhotographerID());
             return statement.execute();
 
         } catch (SQLException e) {
@@ -202,6 +195,7 @@ public class DBService implements DBServiceSupport{
             statement.setString(2,model.getSurname());
             statement.setString(3,model.getBirthday());
             statement.setString(4,model.getCountry());
+
             return statement.execute();
 
         } catch (SQLException e) {
@@ -217,6 +211,7 @@ public class DBService implements DBServiceSupport{
             statement.setString(2,model.getUrgency());
             statement.setString(3,model.getCity());
             statement.setString(4,model.getHeadline());
+            statement.setString(5,model.getPath());
             return statement.execute();
 
         } catch (SQLException e) {
@@ -224,7 +219,6 @@ public class DBService implements DBServiceSupport{
             return false;
         }
     }
-
 
     /*public PictureModel getIPTCForImage(File image){
         return false;
@@ -274,15 +268,16 @@ public class DBService implements DBServiceSupport{
             if(rs.next()) {
                 PictureModel pm = new PictureModel(rs.getString("path"));
 
-                pm.setFileformat(rs.getString("fileformat"));
-                pm.setCountry(rs.getString("country"));
-                pm.setIso(rs.getString("iso"));
-                pm.setCaption(rs.getString("caption"));
-                pm.setCatergory(rs.getString("category"));
-                pm.setUrgency(rs.getString("urgency"));
-                pm.setCity(rs.getString("city"));
-                pm.setHeadline(rs.getString("headline"));
-
+                pm.setPath(rs.getString("path"));
+                pm.setFileformat(rs.getString("EXIF_fileformat"));
+                pm.setCountry(rs.getString("EXIF_country"));
+                pm.setIso(rs.getString("EXIF_iso"));
+                pm.setCaption(rs.getString("EXIF_caption"));
+                pm.setCatergory(rs.getString("IPTC_category"));
+                pm.setUrgency(rs.getString("IPTC_urgency"));
+                pm.setCity(rs.getString("IPTC_city"));
+                pm.setHeadline(rs.getString("IPTC_headline"));
+                pm.setPhotographerID(rs.getInt("photographerID"));
 
                 //Logger.debug("Successfully retrieved picture by path from database.");
                 stmt.close();
@@ -298,6 +293,63 @@ public class DBService implements DBServiceSupport{
             //Logger.trace(e);
             return null;
         }
+    }
+
+
+    @Override
+    public ArrayList<String> getPathsFromSearchString(String search) {
+        try {
+            // look for filename
+            PreparedStatement stmt1 = conn.prepareStatement(SELECT_PATHS_BY_FILENAME);
+            stmt1.setString(1, Main.BILDER + "%" + search + "%");
+            // look for category
+            PreparedStatement stmt2 = conn.prepareStatement(SELECT_PATHS_BY_CATEGORY);
+            stmt2.setString(1, "%" + search + "%");
+            // look for urgency
+            PreparedStatement stmt3 = conn.prepareStatement(SELECT_PATHS_BY_URGENCY);
+            stmt3.setString(1, "%" + search + "%");
+            // look for city
+            PreparedStatement stmt4 = conn.prepareStatement(SELECT_PATHS_BY_CITY);
+            stmt4.setString(1, "%" + search + "%");
+            //look for headline
+            PreparedStatement stmt5 = conn.prepareStatement(SELECT_PATHS_BY_HEADLINE);
+            stmt5.setString(1, "%" + search + "%");
+
+            /* result set containing all paths matching search string in each columns
+            HashSet -> no duplicates :) */
+            HashSet<String> result = new HashSet<>(Collections.emptySet());
+
+            result.addAll(getPathsFromResultSet(stmt1.executeQuery()));
+            stmt1.close();
+            result.addAll(getPathsFromResultSet(stmt2.executeQuery()));
+            stmt2.close();
+            result.addAll(getPathsFromResultSet(stmt3.executeQuery()));
+            stmt3.close();
+            result.addAll(getPathsFromResultSet(stmt4.executeQuery()));
+            stmt4.close();
+            result.addAll(getPathsFromResultSet(stmt5.executeQuery()));
+            stmt5.close();
+
+            Logger.debug("Successfully retrieved picture paths from database.");
+            return new ArrayList<>(result);
+        } catch (SQLException e) {
+            Logger.debug("Failed to retrieve picture paths from database.");
+            Logger.trace(e);
+            return null;
+        }
+    }
+    private ArrayList<String> getPathsFromResultSet(ResultSet rs) throws SQLException {
+        ArrayList<String> results = new ArrayList<>();
+        while(rs.next()) {
+            results.add(rs.getString("path"));
+        }
+        return results;
+    }
+
+    public void DeleteDatabase() throws SQLException {
+        Statement stmt = conn.createStatement();
+        stmt.execute(DELETE_DATABASE);
+        stmt.close();
     }
 
 

@@ -47,6 +47,7 @@ public class PictureViewModel {
         updateProperties();
     }
 
+    public PictureModel getPictureModel(){ return picture; }
     public void setPictureModel(PictureModel picture) {
         this.picture = picture;
     }
@@ -57,7 +58,6 @@ public class PictureViewModel {
         path.set(picture.getPath());
         //set new EXIF value
         fileformat.set(picture.getFileformat());
-        dateCreated.set(picture.getDateCreated());
         country.set(picture.getCountry());
         iso.set(picture.getIso());
         caption.set(picture.getCaption());
