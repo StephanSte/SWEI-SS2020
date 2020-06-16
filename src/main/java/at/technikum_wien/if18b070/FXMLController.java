@@ -233,10 +233,11 @@ public class FXMLController implements Initializable {
 
         //items.addAll(Main.DATABASE.getPhotographers());
         ListViewPhotographerModel.setItems(ObservablePhotographerModel);
-        //ListViewPhotographerModel.setPrefWidth(300);
-        //ListViewPhotographerModel.setPrefHeight(200);
-        allPhotographers.setFitToHeight(true);
-        allPhotographers.setFitToWidth(true);
+        ListViewPhotographerModel.setPrefWidth(500);
+        ListViewPhotographerModel.setPrefHeight(300);
+
+        //ListViewPhotographerModel.get
+
         allPhotographers.setContent(ListViewPhotographerModel);
 
     }
