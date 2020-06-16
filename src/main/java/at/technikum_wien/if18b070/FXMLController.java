@@ -225,20 +225,6 @@ public class FXMLController implements Initializable {
             displayPhotographers();
         });
 
-        SaveIPTCButton.setOnAction(event -> {
-            PictureModel pm = PictureViewModel.getPictureModel();
-
-            pm.setCatergory(iptc_category.getText());
-            pm.setUrgency(iptc_urgency.getText());
-            pm.setCity(iptc_city.getText());
-            pm.setHeadline(iptc_headline.getText());
-
-            Main.DATABASE.updateIPTC(pm);
-
-            PictureViewModel.updateProperties();
-        });
-
-
         this.imgActive.fitWidthProperty().bind(this.imgActiveContainer.widthProperty());
         this.imgActive.fitHeightProperty().bind(this.imgActiveContainer.heightProperty());
         Logger.debug("Successfully Prepared necessary preperations");
