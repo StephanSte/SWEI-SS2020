@@ -65,7 +65,6 @@ public class DBService implements DBServiceSupport{
     private static final String RETURN_PICTURE_BY_PATH = "SELECT * FROM picture WHERE path = ?";
     private static final String GETFHIDS = "SELECT fhid FROM photographer";
     private static final String GET_PHOTOGRAPHER_FROM_FHID = "SELECT * FROM PHOTOGRAPHER WHERE fhid = ?";
-    private static final String GET_PHOTOGRAPHER_FOR_PICTURE = "SELECT * FROM photographer WHERE fhid = ?";
     // selection by filename
     private static final String SELECT_PATHS_BY_FILENAME = "SELECT path FROM pictures WHERE path LIKE ?";
     // selection by EXIF
@@ -287,7 +286,7 @@ public class DBService implements DBServiceSupport{
             model.setSurname(rs.getString("surname"));
             model.setBirthday(rs.getString("birthday"));
             model.setCountry(rs.getString("Country"));
-            statement.close();
+            //statement.close();
             return model;
 
         } catch (SQLException e) {
@@ -299,7 +298,7 @@ public class DBService implements DBServiceSupport{
     @Override
     public PhotographerModel getPhotographerForPicture(String photographerID) {
         try{
-            PreparedStatement statement = conn.prepareStatement(GET_PHOTOGRAPHER_FOR_PICTURE);
+            PreparedStatement statement = conn.prepareStatement(GET_PHOTOGRAPHER_FROM_FHID);
             ResultSet rs = statement.executeQuery();
 
             PhotographerModel model = new PhotographerModel();
@@ -308,8 +307,8 @@ public class DBService implements DBServiceSupport{
             model.setName(rs.getString("name"));
             model.setSurname(rs.getString("surname"));
             model.setBirthday(rs.getString("birthday"));
-            model.setCountry(rs.getString("Country"));
-            statement.close();
+            model.setCountry(rs.getString("country"));
+
             return model;
 
         } catch (SQLException e) {

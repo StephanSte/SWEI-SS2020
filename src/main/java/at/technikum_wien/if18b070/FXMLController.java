@@ -314,7 +314,7 @@ public class FXMLController implements Initializable {
         Logger.debug(activePhotographerFhid);
 
         Main.DATABASE.addPhotographerToPicture(activePicturePath, activePhotographerFhid);
-
+        setPhotographerToImage();
         e.consume();
     }
 
@@ -363,9 +363,27 @@ public class FXMLController implements Initializable {
         exif_iso.setText(PictureViewModel.iso.getValue());
         exif_caption.setText(PictureViewModel.caption.getValue());
 
-
-        Photographermodel = Main.DATABASE.getPhotographerForPicture(PictureViewModel.photographerID.getValue());
+        if (PictureViewModel.photographerID.getValue() != null) {
+            setPhotographerToImage();
+        }else{
+            currentPicturefhid.setText("");
+            currentPicturename.setText("");
+            currentPicturesurname.setText("");
+            currentPicturebirthday.setText("");
+            currentPicturecountry.setText("");
+        }
 
         Logger.debug("Successfully updated ActiveImage.");
+    }
+
+    private void setPhotographerToImage(){
+        Photographermodel = Main.DATABASE.getPhotographerForPicture(PictureViewModel.photographerID.getValue());
+        PhotographerViewModel.updatePhotographerProperties();
+
+        currentPicturefhid.setText(PhotographerViewModel.fhid.getValue());
+        currentPicturename.setText(PhotographerViewModel.name.getValue());
+        currentPicturesurname.setText(PhotographerViewModel.surname.getValue());
+        currentPicturebirthday.setText(PhotographerViewModel.birthday.getValue());
+        currentPicturecountry.setText(PhotographerViewModel.country.getValue());
     }
 }
