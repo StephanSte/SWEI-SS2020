@@ -297,28 +297,6 @@ public class DBService implements DBServiceSupport{
         }
         return null;
     }
-    @Override
-    public PhotographerModel getPhotographerForPicture(String photographerID) {
-        try{
-            PreparedStatement statement = conn.prepareStatement(GET_PHOTOGRAPHER_FROM_FHID);
-            ResultSet rs = statement.executeQuery();
-
-            PhotographerModel model = new PhotographerModel();
-
-            model.setFhid(rs.getString("fhid"));
-            model.setName(rs.getString("name"));
-            model.setSurname(rs.getString("surname"));
-            model.setBirthday(rs.getString("birthday"));
-            model.setCountry(rs.getString("country"));
-
-            return model;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            Logger.debug("Failed to retrieve Model from Id");
-        }
-        return null;
-    }
 
     @Override
     public ArrayList<PhotographerModel> getPhotographers() {

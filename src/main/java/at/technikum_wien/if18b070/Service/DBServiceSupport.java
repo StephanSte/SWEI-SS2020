@@ -9,24 +9,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public interface DBServiceSupport {
-    public boolean addNewImage(PictureModel model);
-    public boolean addIPTC(PictureModel model);
-    public boolean addEXIF(PictureModel model);
-    public boolean addNewPhotographer(PhotographerModel model);
+    boolean addNewImage(PictureModel model);
+    boolean addIPTC(PictureModel model);
+    boolean addEXIF(PictureModel model);
+    boolean addNewPhotographer(PhotographerModel model);
 
-    public boolean updatePhotographerForImage(PictureModel model);
-    public boolean updatePhotographer(PhotographerModel model);
-    public boolean updateIPTC(PictureModel model);
-    public boolean addPhotographerToPicture(String path, String fhid);
+    boolean updatePhotographerForImage(PictureModel model);
+    boolean updatePhotographer(PhotographerModel model);
+    boolean updateIPTC(PictureModel model);
+    boolean addPhotographerToPicture(String path, String fhid);
 
-    public PictureModel getPictureModelFromPath(String path);
+    PictureModel getPictureModelFromPath(String path);
     //public PhotographerModel getPhotographerForImage(File image);
-    public Collection<PhotographerModel> getPhotographers();
-    public ArrayList<String> getPathsFromSearchString(String search);
-    public PhotographerModel getPhotographerForPicture(String photographerID);
-    public PhotographerModel getPhotographerFromFhid(String fhid);
-    public ArrayList<String> getPhotographerFhids();
-    public void DeleteDatabase()throws SQLException;
+    Collection<PhotographerModel> getPhotographers();
+    ArrayList<String> getPathsFromSearchString(String search);
+    PhotographerModel getPhotographerFromFhid(String fhid);
+    ArrayList<String> getPhotographerFhids();
+    void DeleteDatabase()throws SQLException;
 
-    public void close();
+    void close();
 }
