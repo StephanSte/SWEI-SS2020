@@ -18,26 +18,38 @@ public class DBService implements DBServiceSupport{
     private Connection conn;
     private Dictionary<String, PreparedStatement> preparedStatements = new Hashtable<>();
     
-    private static final String CREATE_PHOTOGRAPHER = "CREATE TABLE IF NOT EXISTS photographer (\n"
-            + " id integer PRIMARY KEY,\n"
-            + " name text NOT NULL,\n"
-            + " surname text NOT NULL,\n"
-            + " birthday date NOT NULL,\n"
-            + " country text NOT NULL"
-            + " );";
-    private static final String CREATE_PICTURE = "CREATE TABLE IF NOT EXISTS picture (\n"
-            + "id integer PRIMARY KEY,\n"
-            + "path text NOT NULL,\n"
-            + "EXIF_fileformat text ,\n"
-            + "EXIF_country text ,\n"
-            + "EXIF_iso text ,\n"
-            + "EXIF_caption text ,\n"
-            + "IPTC_category text ,\n"
-            + "IPTC_urgency text, \n"
-            + "IPTC_city text, \n"
-            + "IPTC_headline text, \n"
-            + "photographerID int"
-            + ");";
+    private static final String CREATE_PHOTOGRAPHER = "create table if not exists  photographer\n" +
+            "(\n" +
+            "    fhid     text\n" +
+            "        constraint photographer_pk\n" +
+            "            primary key,\n" +
+            "    name     text not null,\n" +
+            "    surname  text not null,\n" +
+            "    birthday date not null,\n" +
+            "    country  text not null\n" +
+            ");\n" +
+            "\n" +
+            "create unique index photographer_fhid_uindex\n" +
+            "    on photographer (fhid);";
+    private static final String CREATE_PICTURE = "create table if not exists picture\n" +
+            "(\n" +
+            "    path            text\n" +
+            "        constraint picture_pk\n" +
+            "            primary key,\n" +
+            "    EXIF_fileformat text,\n" +
+            "    EXIF_country    text,\n" +
+            "    EXIF_iso        text,\n" +
+            "    EXIF_caption    text,\n" +
+            "    IPTC_category   text,\n" +
+            "    IPTC_urgency    text,\n" +
+            "    IPTC_city       text,\n" +
+            "    IPTC_headline   text,\n" +
+            "    photographerID  int\n" +
+            "        references photographer\n" +
+            ");\n" +
+            "\n" +
+            "create unique index picture_path_uindex\n" +
+            "    on picture (path);\n";
     private static final String INSERT_IMAGE = "INSERT OR IGNORE INTO picture VALUES(?,?,?,?,?,?,?,?,?,?)";
     private static final String INSERT_IPTC = "INSERT INTO picture(IPTC_CATEGORY, IPTC_URGENCY, IPTC_CITY, IPTC_HEADLINE) VALUES(?,?,?,?)";
     private static final String INSERT_EXIF = "INSERT INTO picture(EXIF_fileformat, EXIF_country, EXIF_ISO, EXIF_CAPTION) VALUES(?,?,?,?)";

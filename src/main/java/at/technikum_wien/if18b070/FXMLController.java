@@ -212,6 +212,8 @@ public class FXMLController implements Initializable {
         });
 
 
+
+
         this.imgActive.fitWidthProperty().bind(this.imgActiveContainer.widthProperty());
         this.imgActive.fitHeightProperty().bind(this.imgActiveContainer.heightProperty());
         Logger.debug("Successfully Prepared necessary preperations");
