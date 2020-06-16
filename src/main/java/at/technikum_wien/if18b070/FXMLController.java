@@ -327,7 +327,7 @@ public class FXMLController implements Initializable {
         String activePhotographerFhid = PhotographerViewModel.fhid.getValue();
         Logger.debug(activePhotographerFhid);
 
-        Main.DATABASE.addPhotographerToPicture(activePhotographerFhid, activePicturePath);
+        Main.DATABASE.addPhotographerToPicture(activePicturePath, activePhotographerFhid);
 
         e.consume();
     }
@@ -378,7 +378,7 @@ public class FXMLController implements Initializable {
         exif_caption.setText(PictureViewModel.caption.getValue());
 
 
-        //Photographermodel = Main.DATABASE.getPhotographerForPicture(PictureViewModel.photographerID.getValue());
+        Photographermodel = Main.DATABASE.getPhotographerForPicture(PictureViewModel.photographerID.getValue());
 
         Logger.debug("Successfully updated ActiveImage.");
     }
