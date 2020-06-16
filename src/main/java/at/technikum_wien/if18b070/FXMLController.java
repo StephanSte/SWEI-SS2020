@@ -257,8 +257,7 @@ public class FXMLController implements Initializable {
 
         ListViewPhotographerModel = new ListView<PhotographerModel>();
         ObservablePhotographerModel = FXCollections.observableList(Main.DATABASE.getPhotographers());
-
-
+        photographersScrollPaneVBox.getChildren().clear();
 
         for(PhotographerModel photographerModel : ObservablePhotographerModel){
             Button button = new Button();
