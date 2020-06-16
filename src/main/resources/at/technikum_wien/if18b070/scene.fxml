@@ -147,7 +147,7 @@
                                     <TextField fx:id="newcountry" />
 
                                     <Button fx:id="SaveNewPhotographerButton">Save Photographer</Button>
-                                    <Button fx:id="UpdatePhotographerButton">Update Photographer</Button>
+
                                 </VBox>
                             </HBox>
                         </ScrollPane>

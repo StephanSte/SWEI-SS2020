@@ -135,6 +135,7 @@ public class FXMLController implements Initializable {
 
     private PictureViewModel PictureViewModel;
     private PhotographerViewModel PhotographerViewModel;
+    private PhotographerModel Photographermodel;
     private List<PictureViewModel> ListofModels = new ArrayList<PictureViewModel>();
     private List<PhotographerViewModel> ListOfPhotographers;
     private ArrayList<String> photographerFhids = new ArrayList<>();
@@ -146,7 +147,7 @@ public class FXMLController implements Initializable {
         //for nothing atm
         initializeMenuBar();
         //for Photographers
-        //savePhotographerInfo.setAction(this::handleSavePhotographerInfo);
+        savePhotographerInfo.setAction(this::handleSavePhotographerInfo);
         loadPhotograherFhids();
         displayPhotographers();
         initializeActivePhotographer();
@@ -325,24 +326,6 @@ public class FXMLController implements Initializable {
 
         e.consume();
     }
-
-
-    //TODO:: delete if necessary
-    private void updatePhotographer(){
-        SaveIPTCButton.setOnAction(event -> {
-            PictureModel pm = PictureViewModel.getPictureModel();
-
-            pm.setCatergory(iptc_category.getText());
-            pm.setUrgency(iptc_urgency.getText());
-            pm.setCity(iptc_city.getText());
-            pm.setHeadline(iptc_headline.getText());
-
-            Main.DATABASE.updateIPTC(pm);
-
-            PictureViewModel.updateProperties();
-        });
-    }
-
 
     //****************************** Fill Scroll Pane with all Pictures *******************************************
     private void fillScrollPane() {
