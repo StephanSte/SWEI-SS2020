@@ -198,9 +198,7 @@ public class DBService implements DBServiceSupport{
         try{
             PreparedStatement statement = conn.prepareStatement(UPDATE_PHOTOGRAPHER_FOR_IMAGE);
             statement.setString(1,fhid);
-            Logger.debug(fhid);
             statement.setString(2,path);
-            Logger.debug(path);
 
             Logger.debug("Set Photographer as Active Picturetaker");
             return statement.execute();
@@ -297,6 +295,7 @@ public class DBService implements DBServiceSupport{
         }
         return null;
     }
+
 
     @Override
     public ArrayList<PhotographerModel> getPhotographers() {

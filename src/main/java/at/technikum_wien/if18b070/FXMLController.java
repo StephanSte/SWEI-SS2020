@@ -259,7 +259,7 @@ public class FXMLController implements Initializable {
             photographersScrollPaneVBox.getChildren().add(button);
         }
     }
-
+    //setzt ersten Photographen aus der Tabelle und macht sie Bidirektional
     private void initializeActivePhotographer(){
         PhotographerViewModel = new PhotographerViewModel(
                 Main.DATABASE.getPhotographerFromFhid(
@@ -273,7 +273,7 @@ public class FXMLController implements Initializable {
         country.textProperty().bindBidirectional(PhotographerViewModel.country);
 
     }
-
+    //handle Named Buttons
     private void handleClickedPhotographerButton(Event e) {
         // get fhid from button id
         String fhid = ((Button)e.getSource()).getId();
@@ -291,7 +291,7 @@ public class FXMLController implements Initializable {
         Logger.debug("Handeled the Upph click");
     }
 
-
+    //Speichert neue/geänderte Photographen Daten in Datenbank
     private void handleSavePhotographerInfo(Event e) {
         // PhotographerModel to be updated
         PhotographerModel phm = PhotographerViewModel.getPhotographerModel();
@@ -307,6 +307,7 @@ public class FXMLController implements Initializable {
         Logger.debug("Handeled the other Button click");
     }
 
+    //nimmt aktiven Path und fhid und fügt fhid zu picture als photographerID hinzu
     private void setPictureToPhotographer(Event e){
         String activePicturePath = PictureViewModel.path.getValue();
         Logger.debug(activePicturePath);

@@ -30,12 +30,10 @@ public class PhotographerViewModel {
 
     //update after editing a picture
     public void updatePhotographerProperties(){
-        //Set new path
         fhid.set(Photographer.getFhid());
         name.set(Photographer.getName());
         surname.set(Photographer.getSurname());
         birthday.set(Photographer.getBirthday());
         country.set(Photographer.getCountry());
     }
-
 }
