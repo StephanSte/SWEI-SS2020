@@ -138,7 +138,7 @@ public class FXMLController implements Initializable {
     private PictureViewModel PictureViewModel;
     private PhotographerViewModel PhotographerViewModel;
     private PhotographerModel Photographermodel;
-    private List<PictureViewModel> ListofModels = new ArrayList<PictureViewModel>();
+    private List<PictureViewModel> ListofModels = new ArrayList<>();
     private List<PhotographerViewModel> ListOfPhotographers;
     private ArrayList<String> photographerFhids = new ArrayList<>();
 
@@ -246,7 +246,7 @@ public class FXMLController implements Initializable {
 
     private void displayPhotographers(){
 
-        ListViewPhotographerModel = new ListView<PhotographerModel>();
+        ListViewPhotographerModel = new ListView<>();
         ObservablePhotographerModel = FXCollections.observableList(Main.DATABASE.getPhotographers());
         photographersScrollPaneVBox.getChildren().clear();
 
@@ -279,7 +279,7 @@ public class FXMLController implements Initializable {
         String fhid = ((Button)e.getSource()).getId();
         // set new active PhotographerModel
         PhotographerViewModel.setPhotographer(
-                // get PhotographerModel from database by email
+                // get PhotographerModel from database by fhid
                 Main.DATABASE.getPhotographerFromFhid(
                         fhid
                 )
@@ -314,6 +314,8 @@ public class FXMLController implements Initializable {
         Logger.debug(activePhotographerFhid);
 
         Main.DATABASE.addPhotographerToPicture(activePicturePath, activePhotographerFhid);
+        PictureViewModel.setPictureModel(Main.DATABASE.getPictureModelFromPath(PictureViewModel.path.getValue()));
+        PictureViewModel.updateProperties();
         setPhotographerToImage();
         e.consume();
     }
@@ -377,7 +379,9 @@ public class FXMLController implements Initializable {
     }
 
     private void setPhotographerToImage(){
-        Photographermodel = Main.DATABASE.getPhotographerForPicture(PictureViewModel.photographerID.getValue());
+
+        PhotographerViewModel.setPhotographer(Main.DATABASE.getPhotographerFromFhid(PictureViewModel.photographerID.getValue()));
+
         PhotographerViewModel.updatePhotographerProperties();
 
         currentPicturefhid.setText(PhotographerViewModel.fhid.getValue());

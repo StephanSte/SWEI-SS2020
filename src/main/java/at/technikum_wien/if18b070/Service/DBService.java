@@ -198,7 +198,9 @@ public class DBService implements DBServiceSupport{
         try{
             PreparedStatement statement = conn.prepareStatement(UPDATE_PHOTOGRAPHER_FOR_IMAGE);
             statement.setString(1,fhid);
+            Logger.debug(fhid);
             statement.setString(2,path);
+            Logger.debug(path);
 
             Logger.debug("Set Photographer as Active Picturetaker");
             return statement.execute();
@@ -325,7 +327,7 @@ public class DBService implements DBServiceSupport{
         String surname = null;
         String birthday = null;
         String country = null;
-        ArrayList<PhotographerModel> Liste= new ArrayList<PhotographerModel>();
+        ArrayList<PhotographerModel> Liste= new ArrayList<>();
 
         try{
             PreparedStatement stmt = conn.prepareStatement(RETURN_PHOTOGRAPHERS);
