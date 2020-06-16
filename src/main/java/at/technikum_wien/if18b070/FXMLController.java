@@ -220,20 +220,19 @@ public class FXMLController implements Initializable {
             displayPhotographers();
         });
 
-        /*UpdatePhotographerButton.setOnAction(event -> {
-            PhotographerModel photographer = new PhotographerModel();
+        SaveIPTCButton.setOnAction(event -> {
+            PictureModel pm = PictureViewModel.getPictureModel();
 
-            photographer.setFhid(newfhid.getText());
-            photographer.setName(newname.getText());
-            photographer.setSurname(newsurname.getText());
-            photographer.setBirthday(newbirthday.getText());
-            photographer.setCountry(newcountry.getText());
+            pm.setCatergory(iptc_category.getText());
+            pm.setUrgency(iptc_urgency.getText());
+            pm.setCity(iptc_city.getText());
+            pm.setHeadline(iptc_headline.getText());
 
-            Main.DATABASE.updatePhotographer(photographer);
+            Main.DATABASE.updateIPTC(pm);
 
-            PhotographerViewModel pvm = new PhotographerViewModel(photographer);
-            pvm.updatePhotographerProperties();
-        });*/
+            PictureViewModel.updateProperties();
+        });
+
 
         this.imgActive.fitWidthProperty().bind(this.imgActiveContainer.widthProperty());
         this.imgActive.fitHeightProperty().bind(this.imgActiveContainer.heightProperty());
@@ -258,7 +257,8 @@ public class FXMLController implements Initializable {
 
         ListViewPhotographerModel = new ListView<PhotographerModel>();
         ObservablePhotographerModel = FXCollections.observableList(Main.DATABASE.getPhotographers());
-        photographersScrollPaneVBox.getChildren().clear();
+
+
 
         for(PhotographerModel photographerModel : ObservablePhotographerModel){
             Button button = new Button();
@@ -266,7 +266,6 @@ public class FXMLController implements Initializable {
             button.setId(photographerModel.getFhid());
             button.setText(photographerModel.getName() + " " + photographerModel.getSurname());
             button.setOnAction(this::handleClickedPhotographerButton);
-
             photographersScrollPaneVBox.getChildren().add(button);
         }
     }
