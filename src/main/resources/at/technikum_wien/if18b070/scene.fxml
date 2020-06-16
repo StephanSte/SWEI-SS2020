@@ -16,7 +16,8 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.TextField?>
-<?import javafx.geometry.Insets?>
+
+<?import javafx.scene.control.ListView?>
 <BorderPane id="rootPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.technikum_wien.if18b070.FXMLController">
     <top>
         <VBox>
@@ -105,6 +106,7 @@
                             <HBox>
 
                                 <VBox>
+                                    <Label>FH-ID: </Label>
                                     <Label>Name: </Label>
                                     <Label>Surname: </Label>
                                     <Label>Birthday: </Label>
@@ -112,13 +114,54 @@
                                 </VBox>
 
                                 <VBox>
+                                    <TextField fx:id="fhid" />
                                     <TextField fx:id="name" />
                                     <TextField fx:id="surname" />
                                     <TextField fx:id="birthday" />
                                     <TextField fx:id="country" />
+
                                 </VBox>
                             </HBox>
                         </ScrollPane>
+                    </Tab>
+
+                    <!-- New Photographer Tab -->
+                    <Tab closable="false" text="New Photographer">
+                        <ScrollPane>
+                            <HBox>
+
+                                <VBox>
+                                    <Label>FH-ID: </Label>
+                                    <Label>Name: </Label>
+                                    <Label>Surname: </Label>
+                                    <Label>Birthday: </Label>
+                                    <Label>Country: </Label>
+                                </VBox>
+
+                                <VBox>
+                                    <TextField fx:id="newfhid" />
+                                    <TextField fx:id="newname" />
+                                    <TextField fx:id="newsurname" />
+                                    <TextField fx:id="newbirthday" />
+                                    <TextField fx:id="newcountry" />
+
+                                    <Button fx:id="SaveNewPhotographerButton">Save Photographer</Button>
+                                    <Button fx:id="UpdatePhotographerButton">Update Photographer</Button>
+                                </VBox>
+                            </HBox>
+                        </ScrollPane>
+                    </Tab>
+                    <!-- All Photographers Tab -->
+                    <Tab closable="false" text="All Photographers" fx:id="preparePhotographer">
+                        <Button fx:id="button"></Button>
+                        <SplitPane dividerPositions="0.5">
+                            <AnchorPane>
+                                <ScrollPane fx:id="allPhotographers">
+
+                                </ScrollPane>
+                            </AnchorPane>
+                            <Label fx:id="label" />
+                        </SplitPane>
                     </Tab>
                 </TabPane>
             </SplitPane>
@@ -128,7 +171,7 @@
         </SplitPane>
     </center>
 
-    <Label fx:id="label" />
+    <!--<Label fx:id="label" />-->
 
     <bottom>
         <!-- <Button fx:id="button" />

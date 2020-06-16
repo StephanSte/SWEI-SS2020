@@ -5,16 +5,11 @@ public class PictureModel {
     private String path;
     private int photographerID;
 
-    private PhotographerModel photographer = new PhotographerModel();
-
-    public PhotographerModel getPhotographer() { return photographer; }
-    public void setPhotographer(PhotographerModel photographer) { this.photographer = photographer; }
-
     public PictureModel(String path) { this.setPath(path); }
     //path
     public String getPath() { return path; }
     public void setPath(String path) {this.path = path; }
-
+    //photographer id fk
     public int getPhotographerID() { return photographerID; }
     public void setPhotographerID(int photographerID) { this.photographerID = photographerID; }
 

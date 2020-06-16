@@ -5,6 +5,8 @@ import at.technikum_wien.if18b070.Models.PhotographerModel;
 import at.technikum_wien.if18b070.Models.PictureModel;
 import at.technikum_wien.if18b070.PresentationModels.PhotographerViewModel;
 import at.technikum_wien.if18b070.PresentationModels.PictureViewModel;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -69,6 +71,8 @@ public class FXMLController implements Initializable {
     /* Photographer */
     public PhotographerViewModel photographerViewModel;
     @FXML
+    public TextField fhid;
+    @FXML
     public TextField name;
     @FXML
     public TextField surname;
@@ -76,6 +80,31 @@ public class FXMLController implements Initializable {
     public TextField birthday;
     @FXML
     public TextField country;
+    @FXML
+    public Button  UpdatePhotographerButton;
+
+    /* New Photographer */
+    @FXML
+    public TextField newfhid;
+    @FXML
+    public TextField newname;
+    @FXML
+    public TextField newsurname;
+    @FXML
+    public TextField newbirthday;
+    @FXML
+    public TextField newcountry;
+    @FXML
+    public Button SaveNewPhotographerButton;
+
+    /* All Photographers */
+     @FXML
+     public ScrollPane allPhotographers;
+     @FXML
+     public Tab preparePhotographer;
+     @FXML
+     public Button button;
+
 
     /* ScrollPane */
     @FXML
@@ -85,11 +114,13 @@ public class FXMLController implements Initializable {
     @FXML
     private Label label;
 
-
+    private ObservableList<PhotographerModel> ObservablePhotographerModel = FXCollections.observableArrayList();
+    private ListView<PhotographerModel> ListViewPhotographerModel= new ListView<>();
 
     private PictureViewModel PictureViewModel;
+    private PhotographerViewModel PhotographerViewModel;
     private List<PictureViewModel> ListofModels = new ArrayList<PictureViewModel>();
-    //private List<PictureModel> pictures;
+    private List<PhotographerViewModel> ListOfPhotographers;
 
 
     //*****************************************Initialisation**************************************************************
@@ -99,6 +130,7 @@ public class FXMLController implements Initializable {
         initializeMenuBar();
 
         loadAllPictures();
+        displayPhotographers();
 
         fillScrollPane();
         initializeActivePicture();
@@ -124,6 +156,7 @@ public class FXMLController implements Initializable {
     }
 
     //**************************************** Version/Preperation ******************************************************
+    //**************************************** Set and Update IPTC and Insert new Photographer ******************************************************
 
     private void prep(){
         String javaVersion = System.getProperty("java.version");
@@ -131,8 +164,8 @@ public class FXMLController implements Initializable {
         this.label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
 
         /*searchBar.setOnKeyReleased(event -> {
-            loadThumbnails();
-            updateScrollPane();
+            loadAllPictures();
+            fillScrollPane();
         });*/
 
         SaveIPTCButton.setOnAction(event -> {
@@ -148,6 +181,37 @@ public class FXMLController implements Initializable {
             PictureViewModel.updateProperties();
         });
 
+        SaveNewPhotographerButton.setOnAction(event -> {
+            PhotographerModel photographer = new PhotographerModel();
+
+            photographer.setFhid(newfhid.getText());
+            photographer.setName(newname.getText());
+            photographer.setSurname(newsurname.getText());
+            photographer.setBirthday(newbirthday.getText());
+            photographer.setCountry(newcountry.getText());
+
+            Main.DATABASE.addNewPhotographer(photographer);
+
+            PhotographerViewModel pvm = new PhotographerViewModel(photographer);
+            pvm.updatePhotographerProperties();
+        });
+
+        UpdatePhotographerButton.setOnAction(event -> {
+            PhotographerModel photographer = new PhotographerModel();
+
+            photographer.setFhid(newfhid.getText());
+            photographer.setName(newname.getText());
+            photographer.setSurname(newsurname.getText());
+            photographer.setBirthday(newbirthday.getText());
+            photographer.setCountry(newcountry.getText());
+
+            Main.DATABASE.updatePhotographer(photographer);
+
+            PhotographerViewModel pvm = new PhotographerViewModel(photographer);
+            pvm.updatePhotographerProperties();
+        });
+
+
         this.imgActive.fitWidthProperty().bind(this.imgActiveContainer.widthProperty());
         this.imgActive.fitHeightProperty().bind(this.imgActiveContainer.heightProperty());
         Logger.debug("Successfully Prepared necessary preperations");
@@ -161,6 +225,23 @@ public class FXMLController implements Initializable {
         }
         Logger.debug("Successfully loaded all Pictures.");
     }
+    //**************************************** Display the Photographers in the DB ******************************************************
+    private void displayPhotographers(){
+
+        ListViewPhotographerModel = new ListView<PhotographerModel>();
+        ObservablePhotographerModel = FXCollections.observableList(Main.DATABASE.getPhotographers());
+
+        //items.addAll(Main.DATABASE.getPhotographers());
+        ListViewPhotographerModel.setItems(ObservablePhotographerModel);
+        //ListViewPhotographerModel.setPrefWidth(300);
+        //ListViewPhotographerModel.setPrefHeight(200);
+        allPhotographers.setFitToHeight(true);
+        allPhotographers.setFitToWidth(true);
+        allPhotographers.setContent(ListViewPhotographerModel);
+
+    }
+
+
 
     //****************************** Fill Scroll Pane with all Pictures *******************************************
     private void fillScrollPane() {
@@ -177,7 +258,7 @@ public class FXMLController implements Initializable {
             imgView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
                 //set new PictureModel for the active ViewModel
                 PictureViewModel.setPictureModel(Main.DATABASE.getPictureModelFromPath(pvm.path.getValue()));
-                //PictureViewModel.setPictureModel(new PictureModel(pvm.path.getValue()));
+
                 PictureViewModel.updateProperties();
 
                 updateActiveImage();
@@ -188,10 +269,14 @@ public class FXMLController implements Initializable {
         Logger.debug("Successfully filled Scrollpane.");
     }
 
+
+
     //*********************** update Active Picture that is displayed *************************************
     private void updateActiveImage(){
         Image image = new Image("file:" + PictureViewModel.path.getValue());
         imgActive.setImage(image);
+
+        //fhid.setText(Main.DATABASE.getPhotographerForImage(PictureViewModel.));
 
         iptc_category.setText(PictureViewModel.category.getValue());
         iptc_urgency.setText(PictureViewModel.urgency.getValue());

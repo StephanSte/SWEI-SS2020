@@ -7,6 +7,9 @@ import at.technikum_wien.if18b070.Models.PictureModel;
 import java.io.File;
 import java.sql.*;
 import java.util.*;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.tinylog.Logger;
 
 
@@ -38,10 +41,10 @@ public class DBService implements DBServiceSupport{
     private static final String INSERT_IMAGE = "INSERT OR IGNORE INTO picture VALUES(?,?,?,?,?,?,?,?,?,?)";
     private static final String INSERT_IPTC = "INSERT INTO picture(IPTC_CATEGORY, IPTC_URGENCY, IPTC_CITY, IPTC_HEADLINE) VALUES(?,?,?,?)";
     private static final String INSERT_EXIF = "INSERT INTO picture(EXIF_fileformat, EXIF_country, EXIF_ISO, EXIF_CAPTION) VALUES(?,?,?,?)";
-    private static final String INSERT_PHOTOGRAPHER = "INSERT INTO photographer VALUES(?,?,?,?)";
+    private static final String INSERT_PHOTOGRAPHER = "INSERT INTO photographer VALUES(?,?,?,?,?)";
     private static final String UPDATE_PHOTOGRAPHER_FOR_IMAGE = "UPDATE picture SET photographerID = ? WHERE path = ?";
     private static final String UPDATE_IPTC = "UPDATE picture SET IPTC_CATEGORY = ?, IPTC_URGENCY = ?, IPTC_CITY = ?, IPTC_HEADLINE = ? WHERE path = ?";
-    private static final String UPDATE_PHOTOGRAPHER = "UPDATE photographer SET name = ?, surname = ?, birthday = ?, country = ? WHERE id = ?";
+    private static final String UPDATE_PHOTOGRAPHER = "UPDATE photographer SET name = ?, surname = ?, birthday = ?, country = ? WHERE fhid = ?";
     //get the Exif Data of the displayed image
     private static final String RETURN_EXIF_FROM_IMAGE = "SELECT * FROM picture(EXIF_fileformat, EXIF_country, EXIF_ISO, EXIF_CAPTION) WHERE img_path = ?";
     //get the Iptc Data of the displayed image
@@ -161,10 +164,11 @@ public class DBService implements DBServiceSupport{
     public boolean addNewPhotographer(PhotographerModel model) {
         try{
             PreparedStatement statement = conn.prepareStatement(INSERT_PHOTOGRAPHER);
-            statement.setString(1,model.getName());
-            statement.setString(2,model.getSurname());
-            statement.setString(3,model.getBirthday());
-            statement.setString(4,model.getCountry());
+            statement.setString(1,model.getFhid());
+            statement.setString(2,model.getName());
+            statement.setString(3,model.getSurname());
+            statement.setString(4,model.getBirthday());
+            statement.setString(5,model.getCountry());
             return statement.execute();
 
         } catch (SQLException e) {
@@ -195,6 +199,8 @@ public class DBService implements DBServiceSupport{
             statement.setString(2,model.getSurname());
             statement.setString(3,model.getBirthday());
             statement.setString(4,model.getCountry());
+            statement.setString(5,model.getFhid());
+
 
             return statement.execute();
 
@@ -220,14 +226,11 @@ public class DBService implements DBServiceSupport{
         }
     }
 
-    /*public PictureModel getIPTCForImage(File image){
-        return false;
-    }*/
 
 
     @Override
     public PhotographerModel getPhotographerForImage(File image) {
-        PhotographerModel model = new PhotographerModel();
+        /*PhotographerModel model = new PhotographerModel();
         try{
             ResultSet rs = queryPreparedStatement(RETURN_PHOTOGRAPHER_FROM_IMAGE, image.getAbsolutePath());
             if(rs.next()){
@@ -236,27 +239,60 @@ public class DBService implements DBServiceSupport{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return model;
+        return model;*/
+        return null;
     }
 
     private ResultSet queryPreparedStatement(String statement, String argument) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement(statement);
+        /*PreparedStatement stmt = conn.prepareStatement(statement);
         stmt.setString(1, argument);
-        return stmt.executeQuery();
+        return stmt.executeQuery();*/
+        return null;
     }
 
     private PhotographerModel getPhotographerModelFromResultSet(ResultSet rs) throws SQLException {
-        return new PhotographerModel(
-                rs.getInt(1),
+        /*return new PhotographerModel(
+                rs.getString(1),
                 rs.getString(2),
                 rs.getString(3),
                 rs.getString(4),
-                rs.getString(5));
+                rs.getString(5));*/
+        return null;
     }
 
     @Override
-    public Collection<PhotographerModel> getPhotographers() {
-        return null;
+    public ArrayList<PhotographerModel> getPhotographers() {
+        String fhid = null;
+        String name = null;
+        String surname = null;
+        String birthday = null;
+        String country = null;
+        ArrayList<PhotographerModel> Liste= new ArrayList<PhotographerModel>();
+
+        try{
+            PreparedStatement stmt = conn.prepareStatement(RETURN_PHOTOGRAPHERS);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+                PhotographerModel pm = new PhotographerModel();
+
+                pm.setFhid(rs.getString("fhid"));
+                pm.setName(rs.getString("name"));
+                pm.setSurname(rs.getString("surname"));
+                pm.setBirthday(rs.getString("birthday"));
+                pm.setCountry(rs.getString("country"));
+                Liste.add(pm);
+
+            }
+            Logger.debug("Liste:" + Liste);
+            stmt.close();
+            return Liste;
+
+        }catch (SQLException e) {
+            Logger.debug("Failed to retrieve Photographers.");
+            Logger.trace(e);
+            return null;
+        }
+
     }
 
     @Override
@@ -284,16 +320,18 @@ public class DBService implements DBServiceSupport{
                 return pm;
             }
             else {
-                //Logger.debug("Failed to retrieve picture by path from database: empty ResultSet returned.");
+                Logger.debug("Failed to retrieve picture by path from database: empty ResultSet returned.");
                 return null;
             }
 
         } catch (SQLException e) {
-            //Logger.debug("Failed to retrieve picture by path from database.");
-            //Logger.trace(e);
+            Logger.debug("Failed to retrieve picture by path from database.");
+            Logger.trace(e);
             return null;
         }
     }
+
+
 
 
     @Override
