@@ -235,20 +235,6 @@ public class FXMLController implements Initializable {
             pvm.updatePhotographerProperties();
         });*/
 
-        SaveIPTCButton.setOnAction(event -> {
-            PictureModel pm = PictureViewModel.getPictureModel();
-
-            pm.setCatergory(iptc_category.getText());
-            pm.setUrgency(iptc_urgency.getText());
-            pm.setCity(iptc_city.getText());
-            pm.setHeadline(iptc_headline.getText());
-
-            Main.DATABASE.updateIPTC(pm);
-
-            PictureViewModel.updateProperties();
-        });
-
-
         this.imgActive.fitWidthProperty().bind(this.imgActiveContainer.widthProperty());
         this.imgActive.fitHeightProperty().bind(this.imgActiveContainer.heightProperty());
         Logger.debug("Successfully Prepared necessary preperations");
@@ -272,6 +258,7 @@ public class FXMLController implements Initializable {
 
         ListViewPhotographerModel = new ListView<PhotographerModel>();
         ObservablePhotographerModel = FXCollections.observableList(Main.DATABASE.getPhotographers());
+        photographersScrollPaneVBox.getChildren().clear();
 
         for(PhotographerModel photographerModel : ObservablePhotographerModel){
             Button button = new Button();
@@ -279,6 +266,7 @@ public class FXMLController implements Initializable {
             button.setId(photographerModel.getFhid());
             button.setText(photographerModel.getName() + " " + photographerModel.getSurname());
             button.setOnAction(this::handleClickedPhotographerButton);
+
             photographersScrollPaneVBox.getChildren().add(button);
         }
     }
