@@ -8,6 +8,7 @@ import at.technikum_wien.if18b070.PresentationModels.PictureViewModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -16,6 +17,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import org.tinylog.Logger;
 
 import java.net.URL;
@@ -71,15 +74,15 @@ public class FXMLController implements Initializable {
     /* Photographer */
     public PhotographerViewModel photographerViewModel;
     @FXML
-    public TextField fhid;
+    public Text currentPicturefhid;
     @FXML
-    public TextField name;
+    public Text currentPicturename;
     @FXML
-    public TextField surname;
+    public Text currentPicturesurname;
     @FXML
-    public TextField birthday;
+    public Text currentPicturebirthday;
     @FXML
-    public TextField country;
+    public Text currentPicturecountry;
     @FXML
     public Button  UpdatePhotographerButton;
 
@@ -99,16 +102,29 @@ public class FXMLController implements Initializable {
 
     /* All Photographers */
      @FXML
-     public ScrollPane allPhotographers;
+     public Button updateInfo;
      @FXML
      public Tab preparePhotographer;
      @FXML
-     public Button button;
+     public VBox photographersScrollPaneVBox;
+     @FXML
+     public Text fhid;
+     @FXML
+     public TextField name;
+     @FXML
+     public TextField surname;
+     @FXML
+     public TextField birthday;
+     @FXML
+     public TextField country;
+    @FXML
+    public Button savePhotographerInfo;
 
 
     /* ScrollPane */
     @FXML
     public HBox imgScrollPaneHBox;
+
 
     /* Random Label for HelloFX thingy*/
     @FXML
@@ -121,19 +137,24 @@ public class FXMLController implements Initializable {
     private PhotographerViewModel PhotographerViewModel;
     private List<PictureViewModel> ListofModels = new ArrayList<PictureViewModel>();
     private List<PhotographerViewModel> ListOfPhotographers;
-
+    private ArrayList<String> photographerFhids = new ArrayList<>();
 
     //*****************************************Initialisation**************************************************************
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         prep();
+        //for nothing atm
         initializeMenuBar();
-
-        loadAllPictures();
+        //for Photographers
+        //savePhotographerInfo.setAction(this::handleSavePhotographerInfo);
+        loadPhotograherFhids();
         displayPhotographers();
-
+        initializeActivePhotographer();
+        //for Images
+        loadAllPictures();
         fillScrollPane();
         initializeActivePicture();
+
         Logger.debug("Successfully Initialized.");
 
     }
@@ -161,7 +182,7 @@ public class FXMLController implements Initializable {
     private void prep(){
         String javaVersion = System.getProperty("java.version");
         String javafxVersion = System.getProperty("javafx.version");
-        this.label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
+        //this.label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
 
         /*searchBar.setOnKeyReleased(event -> {
             loadAllPictures();
@@ -194,6 +215,7 @@ public class FXMLController implements Initializable {
 
             PhotographerViewModel pvm = new PhotographerViewModel(photographer);
             pvm.updatePhotographerProperties();
+            displayPhotographers();
         });
 
         UpdatePhotographerButton.setOnAction(event -> {
@@ -211,7 +233,18 @@ public class FXMLController implements Initializable {
             pvm.updatePhotographerProperties();
         });
 
+        SaveIPTCButton.setOnAction(event -> {
+            PictureModel pm = PictureViewModel.getPictureModel();
 
+            pm.setCatergory(iptc_category.getText());
+            pm.setUrgency(iptc_urgency.getText());
+            pm.setCity(iptc_city.getText());
+            pm.setHeadline(iptc_headline.getText());
+
+            Main.DATABASE.updateIPTC(pm);
+
+            PictureViewModel.updateProperties();
+        });
 
 
         this.imgActive.fitWidthProperty().bind(this.imgActiveContainer.widthProperty());
@@ -228,22 +261,87 @@ public class FXMLController implements Initializable {
         Logger.debug("Successfully loaded all Pictures.");
     }
     //**************************************** Display the Photographers in the DB ******************************************************
+    private void loadPhotograherFhids(){
+        photographerFhids.clear();
+        photographerFhids.addAll(Main.DATABASE.getPhotographerFhids());
+    }
+
     private void displayPhotographers(){
 
         ListViewPhotographerModel = new ListView<PhotographerModel>();
         ObservablePhotographerModel = FXCollections.observableList(Main.DATABASE.getPhotographers());
 
-        //items.addAll(Main.DATABASE.getPhotographers());
-        ListViewPhotographerModel.setItems(ObservablePhotographerModel);
-        ListViewPhotographerModel.setPrefWidth(500);
-        ListViewPhotographerModel.setPrefHeight(300);
+        for(PhotographerModel photographerModel : ObservablePhotographerModel){
+            Button button = new Button();
 
-        //ListViewPhotographerModel.get
+            button.setId(photographerModel.getFhid());
+            button.setText(photographerModel.getName() + " " + photographerModel.getSurname());
+            button.setOnAction(this::handleClickedPhotographerButton);
+            photographersScrollPaneVBox.getChildren().add(button);
+        }
+    }
 
-        allPhotographers.setContent(ListViewPhotographerModel);
+    private void initializeActivePhotographer(){
+        PhotographerViewModel = new PhotographerViewModel(
+                Main.DATABASE.getPhotographerFromFhid(
+                        photographerFhids.get(0)
+                )
+        );
+        fhid.textProperty().bindBidirectional(PhotographerViewModel.fhid);
+        name.textProperty().bindBidirectional(PhotographerViewModel.name);
+        surname.textProperty().bindBidirectional(PhotographerViewModel.surname);
+        birthday.textProperty().bindBidirectional(PhotographerViewModel.birthday);
+        country.textProperty().bindBidirectional(PhotographerViewModel.country);
 
     }
 
+    private void handleClickedPhotographerButton(Event e) {
+        // get fhid from button id
+        String fhid = ((Button)e.getSource()).getId();
+        // set new active PhotographerModel
+        PhotographerViewModel.setPhotographer(
+                // get PhotographerModel from database by email
+                Main.DATABASE.getPhotographerFromFhid(
+                        fhid
+                )
+        );
+
+        // update properties
+        PhotographerViewModel.updatePhotographerProperties();
+        Logger.debug("Handeled the Button click");
+    }
+
+
+    private void handleSavePhotographerInfo(Event e) {
+        // PhotographerModel to be updated
+        PhotographerModel phm = PhotographerViewModel.getPhotographerModel();
+        // set new info
+        phm.setName(name.getText());
+        phm.setSurname(surname.getText());
+        phm.setBirthday(birthday.getText());
+        phm.setCountry(country.getText());
+
+        Main.DATABASE.updatePhotographer(phm);
+
+        e.consume();
+    }
+
+
+    //TODO:: delete if necessary
+    private void updatePhotographer(){
+        SaveIPTCButton.setOnAction(event -> {
+            PictureModel pm = PictureViewModel.getPictureModel();
+
+            pm.setCatergory(iptc_category.getText());
+            pm.setUrgency(iptc_urgency.getText());
+            pm.setCity(iptc_city.getText());
+            pm.setHeadline(iptc_headline.getText());
+
+            Main.DATABASE.updateIPTC(pm);
+
+            PictureViewModel.updateProperties();
+        });
+    }
 
 
     //****************************** Fill Scroll Pane with all Pictures *******************************************

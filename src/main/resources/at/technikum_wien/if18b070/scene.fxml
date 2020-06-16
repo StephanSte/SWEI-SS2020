@@ -18,6 +18,7 @@
 <?import javafx.scene.control.TextField?>
 
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.text.Text?>
 <BorderPane id="rootPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.technikum_wien.if18b070.FXMLController">
     <top>
         <VBox>
@@ -114,11 +115,11 @@
                                 </VBox>
 
                                 <VBox>
-                                    <TextField fx:id="fhid" />
-                                    <TextField fx:id="name" />
-                                    <TextField fx:id="surname" />
-                                    <TextField fx:id="birthday" />
-                                    <TextField fx:id="country" />
+                                    <Text fx:id="currentPicturefhid" />
+                                    <Text fx:id="currentPicturename" />
+                                    <Text fx:id="currentPicturesurname" />
+                                    <Text fx:id="currentPicturebirthday" />
+                                    <Text fx:id="currentPicturecountry" />
 
                                 </VBox>
                             </HBox>
@@ -153,15 +154,40 @@
                     </Tab>
                     <!-- All Photographers Tab -->
                     <Tab closable="false" text="All Photographers" fx:id="preparePhotographer">
-                        <Button fx:id="button"></Button>
-                        <SplitPane dividerPositions="0.5">
-                            <AnchorPane>
-                                <ScrollPane fx:id="allPhotographers">
+                        <SplitPane orientation="HORIZONTAL">
 
-                                </ScrollPane>
+                            <AnchorPane>
+
+                                <HBox>
+
+                                    <VBox>
+                                        <Label>FH-ID: </Label>
+                                        <Label>First Name: </Label>
+                                        <Label>Last Name: </Label>
+                                        <Label>Birthday: </Label>
+                                        <Label>Country: </Label>
+                                    </VBox>
+
+                                    <VBox>
+                                        <Text fx:id="fhid" />
+                                        <TextField fx:id="name" />
+                                        <TextField fx:id="surname" />
+                                        <TextField fx:id="birthday" />
+                                        <TextField fx:id="country" />
+                                    </VBox>
+                                    <Button fx:id="savePhotographerInfo">Save Info</Button>
+                                </HBox>
+
                             </AnchorPane>
-                            <Label fx:id="label" />
+
+                            <ScrollPane hbarPolicy="NEVER" vbarPolicy="ALWAYS">
+
+                                <VBox fx:id="photographersScrollPaneVBox" />
+
+                            </ScrollPane>
+
                         </SplitPane>
+
                     </Tab>
                 </TabPane>
             </SplitPane>

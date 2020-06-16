@@ -50,6 +50,7 @@ public class DBService implements DBServiceSupport{
             "\n" +
             "create unique index picture_path_uindex\n" +
             "    on picture (path);\n";
+
     private static final String INSERT_IMAGE = "INSERT OR IGNORE INTO picture VALUES(?,?,?,?,?,?,?,?,?,?)";
     private static final String INSERT_IPTC = "INSERT INTO picture(IPTC_CATEGORY, IPTC_URGENCY, IPTC_CITY, IPTC_HEADLINE) VALUES(?,?,?,?)";
     private static final String INSERT_EXIF = "INSERT INTO picture(EXIF_fileformat, EXIF_country, EXIF_ISO, EXIF_CAPTION) VALUES(?,?,?,?)";
@@ -78,6 +79,8 @@ public class DBService implements DBServiceSupport{
     private static final String SELECT_PATHS_BY_HEADLINE = "SELECT path FROM pictures WHERE iptc_headline LIKE ?";
 
     private static final String DELETE_DATABASE = "DELETE FROM picture";
+    private static final String GETFHIDS = "SELECT fhid FROM photographer";
+    private static final String GETPHOTOGRAPHERFROMFHID = "SELECT * FROM PHOTOGRAPHER WHERE fhid = ?";
 
 
 
@@ -103,6 +106,44 @@ public class DBService implements DBServiceSupport{
             createTables();
         }
     }*/
+
+    public ArrayList<String> getPhotographerFhids(){
+        try{
+            PreparedStatement statement = conn.prepareStatement(GETFHIDS);
+            ResultSet rs = statement.executeQuery();
+
+            ArrayList<String> result = new ArrayList<>();
+            while(rs.next()) result.add(rs.getString("fhid"));
+            return result;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public PhotographerModel getPhotographerFromFhid(String fhid){
+        try{
+            PreparedStatement statement = conn.prepareStatement(GETPHOTOGRAPHERFROMFHID);
+            statement.setString(1, fhid);
+            ResultSet rs = statement.executeQuery();
+
+            PhotographerModel model = new PhotographerModel();
+
+            model.setFhid(fhid);
+            model.setName(rs.getString("name"));
+            model.setSurname(rs.getString("surname"));
+            model.setBirthday(rs.getString("birthday"));
+            model.setCountry(rs.getString("Country"));
+            statement.close();
+            return model;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Logger.debug("Failed to retrieve Model from Id");
+        }
+        return null;
+    }
 
     public static DBService getInstance() {
         return instance;
@@ -304,7 +345,6 @@ public class DBService implements DBServiceSupport{
             Logger.trace(e);
             return null;
         }
-
     }
 
     @Override
