@@ -26,7 +26,7 @@ public class PhotographerViewModel {
     }
 
     public PhotographerModel getPhotographerModel(){ return Photographer; }
-    public void setPhotographer(PhotographerModel photographer) { this.Photographer = Photographer; }
+    public void setPhotographer(PhotographerModel Photographer) { this.Photographer = Photographer; }
 
     //update after editing a picture
     public void updatePhotographerProperties(){
