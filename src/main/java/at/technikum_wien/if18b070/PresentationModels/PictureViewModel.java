@@ -24,6 +24,8 @@ public class PictureViewModel {
     public SimpleStringProperty keywords;
     public SimpleStringProperty city;
     public SimpleStringProperty headline;
+    //PhotographerID
+    public SimpleStringProperty photographerID;
 
 
     public PictureViewModel(PictureModel picture){
@@ -42,6 +44,7 @@ public class PictureViewModel {
         keywords = new SimpleStringProperty();
         city = new SimpleStringProperty();
         headline = new SimpleStringProperty();
+        photographerID = new SimpleStringProperty();
 
         //update after editing a picture
         updateProperties();
@@ -67,5 +70,6 @@ public class PictureViewModel {
         keywords.set(picture.getKeywords());
         city.set(picture.getCity());
         headline.set(picture.getHeadline());
+        photographerID.set(picture.getPhotographerID());
     }
 }

@@ -75,7 +75,7 @@ public class FileHandler {
                 picture.setUrgency(getRandomUrgency());
                 picture.setCity(getRandomCity());
                 picture.setHeadline(getRandomHeadline());
-                picture.setPhotographerID(1);
+                picture.setPhotographerID(null);
                 //add Picture to DB
                 Main.DATABASE.addNewImage(picture);
             }

@@ -4,12 +4,9 @@ import at.technikum_wien.if18b070.Main;
 import at.technikum_wien.if18b070.Models.PhotographerModel;
 import at.technikum_wien.if18b070.Models.PictureModel;
 
-import java.io.File;
 import java.sql.*;
 import java.util.*;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import org.tinylog.Logger;
 
 
@@ -44,32 +41,31 @@ public class DBService implements DBServiceSupport{
             "    IPTC_urgency    text,\n" +
             "    IPTC_city       text,\n" +
             "    IPTC_headline   text,\n" +
-            "    photographerID  int\n" +
+            "    photographerID  text\n" +
             "        references photographer\n" +
             ");\n" +
             "\n" +
             "create unique index picture_path_uindex\n" +
-            "    on picture (path);\n";
+            "    on picture (path);";
 
     private static final String INSERT_IMAGE = "INSERT OR IGNORE INTO picture VALUES(?,?,?,?,?,?,?,?,?,?)";
     private static final String INSERT_IPTC = "INSERT INTO picture(IPTC_CATEGORY, IPTC_URGENCY, IPTC_CITY, IPTC_HEADLINE) VALUES(?,?,?,?)";
     private static final String INSERT_EXIF = "INSERT INTO picture(EXIF_fileformat, EXIF_country, EXIF_ISO, EXIF_CAPTION) VALUES(?,?,?,?)";
     private static final String INSERT_PHOTOGRAPHER = "INSERT INTO photographer VALUES(?,?,?,?,?)";
+    private static final String INSERT_DUMMY_PHOTOGRAPHER = "INSERT INTO photographer VALUES('if18b070','Stephan','Steidl','09.02.1998','Austria')";
+    //private static final String INSERT_PHOTOGRAPHER_FOR_PICTURE = "INSERT INTO picture(photographerID) VALUES(?) WHERE path = ?";
     private static final String UPDATE_PHOTOGRAPHER_FOR_IMAGE = "UPDATE picture SET photographerID = ? WHERE path = ?";
     private static final String UPDATE_IPTC = "UPDATE picture SET IPTC_CATEGORY = ?, IPTC_URGENCY = ?, IPTC_CITY = ?, IPTC_HEADLINE = ? WHERE path = ?";
     private static final String UPDATE_PHOTOGRAPHER = "UPDATE photographer SET name = ?, surname = ?, birthday = ?, country = ? WHERE fhid = ?";
     //get the Exif Data of the displayed image
-    private static final String RETURN_EXIF_FROM_IMAGE = "SELECT * FROM picture(EXIF_fileformat, EXIF_country, EXIF_ISO, EXIF_CAPTION) WHERE img_path = ?";
-    //get the Iptc Data of the displayed image
-    private static final String RETURN_IPTC_FROM_IMAGE = "SELECT * FROM picture(IPTC_CATEGORY, IPTC_URGENCY, IPTC_CITY, IPTC_HEADLINE) WHERE img_path = ?";
-    //get the Photographer of the displayed image
     private static final String RETURN_PHOTOGRAPHER_FROM_IMAGE = "SELECT * FROM photographer WHERE id = (RETURN photographer FROM images WHERE path = ?)";
     //get All Photographers
     private static final String RETURN_PHOTOGRAPHERS = "SELECT * FROM photographer";
     // whole picture selection
     private static final String RETURN_PICTURE_BY_PATH = "SELECT * FROM picture WHERE path = ?";
-    private static final String getPhotographerByName = "select * from PHOTOGRAPHER where NAME = ? and SURNAME = ?";
-    // SELECT STATEMENTS
+    private static final String GETFHIDS = "SELECT fhid FROM photographer";
+    private static final String GET_PHOTOGRAPHER_FROM_FHID = "SELECT * FROM PHOTOGRAPHER WHERE fhid = ?";
+    private static final String GET_PHOTOGRAPHER_FOR_PICTURE = "SELECT * FROM photographer WHERE fhid = ?";
     // selection by filename
     private static final String SELECT_PATHS_BY_FILENAME = "SELECT path FROM pictures WHERE path LIKE ?";
     // selection by EXIF
@@ -77,10 +73,9 @@ public class DBService implements DBServiceSupport{
     private static final String SELECT_PATHS_BY_URGENCY = "SELECT path FROM pictures WHERE iptc_urgency LIKE ?";
     private static final String SELECT_PATHS_BY_CITY = "SELECT path FROM pictures WHERE iptc_city LIKE ?";
     private static final String SELECT_PATHS_BY_HEADLINE = "SELECT path FROM pictures WHERE iptc_headline LIKE ?";
+    private static final String GET_SIZE_OF_PHOTOGRAPHER_TABLE = "SELECT count(fhid) FROM photographer";
 
     private static final String DELETE_DATABASE = "DELETE FROM picture";
-    private static final String GETFHIDS = "SELECT fhid FROM photographer";
-    private static final String GETPHOTOGRAPHERFROMFHID = "SELECT * FROM PHOTOGRAPHER WHERE fhid = ?";
 
 
 
@@ -97,68 +92,39 @@ public class DBService implements DBServiceSupport{
         createTables();
     }
 
-    /*private void initializeDatabase() throws SQLException {
-        DatabaseMetaData metaData = conn.getMetaData();
-        ResultSet result = metaData.getTables(null, null, null, new String[]{"TABLE"});
-        if(result.next()){
-
-        }else {
-            createTables();
-        }
-    }*/
-
-    public ArrayList<String> getPhotographerFhids(){
-        try{
-            PreparedStatement statement = conn.prepareStatement(GETFHIDS);
-            ResultSet rs = statement.executeQuery();
-
-            ArrayList<String> result = new ArrayList<>();
-            while(rs.next()) result.add(rs.getString("fhid"));
-            return result;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public PhotographerModel getPhotographerFromFhid(String fhid){
-        try{
-            PreparedStatement statement = conn.prepareStatement(GETPHOTOGRAPHERFROMFHID);
-            statement.setString(1, fhid);
-            ResultSet rs = statement.executeQuery();
-
-            PhotographerModel model = new PhotographerModel();
-
-            model.setFhid(fhid);
-            model.setName(rs.getString("name"));
-            model.setSurname(rs.getString("surname"));
-            model.setBirthday(rs.getString("birthday"));
-            model.setCountry(rs.getString("Country"));
-            statement.close();
-            return model;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            Logger.debug("Failed to retrieve Model from Id");
-        }
-        return null;
-    }
-
-    public static DBService getInstance() {
-        return instance;
-    }
-
     private void createTables() throws SQLException {
         Statement stmt = conn.createStatement();
 
         stmt.execute(CREATE_PICTURE);
         stmt.execute(CREATE_PHOTOGRAPHER);
+        if (getSizeOfPhotograherTable() == 0){
+            stmt.execute(INSERT_DUMMY_PHOTOGRAPHER);
+        }
+
         stmt.close();
     }
 
 
-    //TODO:: might need to plus 1 everything
+    public int getSizeOfPhotograherTable(){
+        try {
+            PreparedStatement statement = conn.prepareStatement(GET_SIZE_OF_PHOTOGRAPHER_TABLE);
+            ResultSet rs = statement.executeQuery();
+
+            int Size = 0;
+            while (rs.next()) {
+                Size = rs.getInt("count(fhid)");
+            }
+
+            statement.close();
+            return Size;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Logger.debug("Failed to retrieve size");
+            return 5;
+        }
+    }
+
     @Override
     public boolean addNewImage(PictureModel picture){
         try{
@@ -172,7 +138,7 @@ public class DBService implements DBServiceSupport{
             statement.setString(7,picture.getUrgency());
             statement.setString(8,picture.getCity());
             statement.setString(9,picture.getHeadline());
-            statement.setNull(10,picture.getPhotographerID());
+            statement.setString(10,picture.getPhotographerID());
             return statement.execute();
 
         } catch (SQLException e) {
@@ -212,7 +178,6 @@ public class DBService implements DBServiceSupport{
             return false;
         }
     }
-
     @Override
     public boolean addNewPhotographer(PhotographerModel model) {
         try{
@@ -229,13 +194,14 @@ public class DBService implements DBServiceSupport{
             return false;
         }
     }
-
     @Override
-    public boolean updatePhotographerForImage(PictureModel picture) {
+    public boolean addPhotographerToPicture(String path, String fhid){
         try{
             PreparedStatement statement = conn.prepareStatement(UPDATE_PHOTOGRAPHER_FOR_IMAGE);
-            statement.setString(1,picture.getPath());
-            statement.setInt(2,picture.getPhotographerID());
+            statement.setString(1,fhid);
+            statement.setString(2,path);
+
+            Logger.debug("Set Photographer as Active Picturetaker");
             return statement.execute();
 
         } catch (SQLException e) {
@@ -244,6 +210,19 @@ public class DBService implements DBServiceSupport{
         }
     }
 
+    @Override
+    public boolean updatePhotographerForImage(PictureModel picture) {
+        try{
+            PreparedStatement statement = conn.prepareStatement(UPDATE_PHOTOGRAPHER_FOR_IMAGE);
+            statement.setString(1,picture.getPath());
+            statement.setString(2,picture.getPhotographerID());
+            return statement.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     @Override
     public boolean updatePhotographer(PhotographerModel model) {
         try{
@@ -262,7 +241,7 @@ public class DBService implements DBServiceSupport{
             return false;
         }
     }
-
+    @Override
     public boolean updateIPTC(PictureModel model){
         try{
             PreparedStatement statement = conn.prepareStatement(UPDATE_IPTC);
@@ -279,37 +258,64 @@ public class DBService implements DBServiceSupport{
         }
     }
 
-
-
     @Override
-    public PhotographerModel getPhotographerForImage(File image) {
-        /*PhotographerModel model = new PhotographerModel();
+    public ArrayList<String> getPhotographerFhids(){
         try{
-            ResultSet rs = queryPreparedStatement(RETURN_PHOTOGRAPHER_FROM_IMAGE, image.getAbsolutePath());
-            if(rs.next()){
-                model = getPhotographerModelFromResultSet(rs);
-            }
+            PreparedStatement statement = conn.prepareStatement(GETFHIDS);
+            ResultSet rs = statement.executeQuery();
+
+            ArrayList<String> result = new ArrayList<>();
+            while(rs.next()) result.add(rs.getString("fhid"));
+            return result;
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return model;*/
         return null;
     }
+    @Override
+    public PhotographerModel getPhotographerFromFhid(String fhid){
+        try{
+            PreparedStatement statement = conn.prepareStatement(GET_PHOTOGRAPHER_FROM_FHID);
+            statement.setString(1, fhid);
+            ResultSet rs = statement.executeQuery();
 
-    private ResultSet queryPreparedStatement(String statement, String argument) throws SQLException {
-        /*PreparedStatement stmt = conn.prepareStatement(statement);
-        stmt.setString(1, argument);
-        return stmt.executeQuery();*/
+            PhotographerModel model = new PhotographerModel();
+
+            model.setFhid(fhid);
+            model.setName(rs.getString("name"));
+            model.setSurname(rs.getString("surname"));
+            model.setBirthday(rs.getString("birthday"));
+            model.setCountry(rs.getString("Country"));
+            statement.close();
+            return model;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Logger.debug("Failed to retrieve Model from Id");
+        }
         return null;
     }
+    @Override
+    public PhotographerModel getPhotographerForPicture(String photographerID) {
+        try{
+            PreparedStatement statement = conn.prepareStatement(GET_PHOTOGRAPHER_FOR_PICTURE);
+            ResultSet rs = statement.executeQuery();
 
-    private PhotographerModel getPhotographerModelFromResultSet(ResultSet rs) throws SQLException {
-        /*return new PhotographerModel(
-                rs.getString(1),
-                rs.getString(2),
-                rs.getString(3),
-                rs.getString(4),
-                rs.getString(5));*/
+            PhotographerModel model = new PhotographerModel();
+
+            model.setFhid(rs.getString("fhid"));
+            model.setName(rs.getString("name"));
+            model.setSurname(rs.getString("surname"));
+            model.setBirthday(rs.getString("birthday"));
+            model.setCountry(rs.getString("Country"));
+            statement.close();
+            return model;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Logger.debug("Failed to retrieve Model from Id");
+        }
         return null;
     }
 
@@ -346,7 +352,6 @@ public class DBService implements DBServiceSupport{
             return null;
         }
     }
-
     @Override
     public PictureModel getPictureModelFromPath(String path) {
         try {
@@ -365,7 +370,7 @@ public class DBService implements DBServiceSupport{
                 pm.setUrgency(rs.getString("IPTC_urgency"));
                 pm.setCity(rs.getString("IPTC_city"));
                 pm.setHeadline(rs.getString("IPTC_headline"));
-                pm.setPhotographerID(rs.getInt("photographerID"));
+                pm.setPhotographerID(rs.getString("photographerID"));
 
                 //Logger.debug("Successfully retrieved picture by path from database.");
                 stmt.close();
@@ -382,10 +387,6 @@ public class DBService implements DBServiceSupport{
             return null;
         }
     }
-
-
-
-
     @Override
     public ArrayList<String> getPathsFromSearchString(String search) {
         try {
@@ -436,12 +437,14 @@ public class DBService implements DBServiceSupport{
         return results;
     }
 
+
+
+    @Override
     public void DeleteDatabase() throws SQLException {
         Statement stmt = conn.createStatement();
         stmt.execute(DELETE_DATABASE);
         stmt.close();
     }
-
 
     @Override
     public void close() {

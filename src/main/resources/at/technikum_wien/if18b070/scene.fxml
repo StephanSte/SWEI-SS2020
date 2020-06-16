@@ -176,6 +176,7 @@
                                         <TextField fx:id="country" />
                                     </VBox>
                                     <Button fx:id="savePhotographerInfo">Save Info</Button>
+                                    <Button fx:id="SetPhotographerForActivePicture">Set Photographer for active Picture</Button>
                                 </HBox>
 
                             </AnchorPane>

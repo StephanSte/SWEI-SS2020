@@ -3,15 +3,15 @@ package at.technikum_wien.if18b070.Models;
 public class PictureModel {
     //picture
     private String path;
-    private int photographerID;
+    private String photographerID;
 
     public PictureModel(String path) { this.setPath(path); }
     //path
     public String getPath() { return path; }
     public void setPath(String path) {this.path = path; }
     //photographer id fk
-    public int getPhotographerID() { return photographerID; }
-    public void setPhotographerID(int photographerID) { this.photographerID = photographerID; }
+    public String getPhotographerID() { return photographerID; }
+    public void setPhotographerID(String photographerID) { this.photographerID = photographerID; }
 
     //IPTC
     private String category;

@@ -119,6 +119,8 @@ public class FXMLController implements Initializable {
      public TextField country;
     @FXML
     public Button savePhotographerInfo;
+    @FXML
+    public Button SetPhotographerForActivePicture;
 
 
     /* ScrollPane */
@@ -144,16 +146,19 @@ public class FXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         prep();
-        //for nothing atm
         initializeMenuBar();
+        loadAllPictures();
+        //for nothing atm
+
         //for Photographers
         savePhotographerInfo.setOnAction(this::handleSavePhotographerInfo);
+        SetPhotographerForActivePicture.setOnAction(this::setPictureToPhotographer);
         loadPhotograherFhids();
         displayPhotographers();
         initializeActivePhotographer();
 
         //for Images
-        loadAllPictures();
+
         fillScrollPane();
         initializeActivePicture();
 
@@ -247,7 +252,7 @@ public class FXMLController implements Initializable {
         }
         Logger.debug("Successfully loaded all Pictures.");
     }
-    //**************************************** Display the Photographers in the DB ******************************************************
+    //**************************************** Display the Photographers in the DB and on the Pane ******************************************************
     private void loadPhotograherFhids(){
         photographerFhids.clear();
         photographerFhids.addAll(Main.DATABASE.getPhotographerFhids());
@@ -296,7 +301,8 @@ public class FXMLController implements Initializable {
 
         // update properties
         PhotographerViewModel.updatePhotographerProperties();
-        Logger.debug("Handeled the Button click");
+        e.consume();
+        Logger.debug("Handeled the Upph click");
     }
 
 
@@ -310,9 +316,20 @@ public class FXMLController implements Initializable {
         phm.setCountry(country.getText());
 
         Main.DATABASE.updatePhotographer(phm);
-
+        displayPhotographers();
         e.consume();
         Logger.debug("Handeled the other Button click");
+    }
+
+    private void setPictureToPhotographer(Event e){
+        String activePicturePath = PictureViewModel.path.getValue();
+        Logger.debug(activePicturePath);
+        String activePhotographerFhid = PhotographerViewModel.fhid.getValue();
+        Logger.debug(activePhotographerFhid);
+
+        Main.DATABASE.addPhotographerToPicture(activePhotographerFhid, activePicturePath);
+
+        e.consume();
     }
 
     //****************************** Fill Scroll Pane with all Pictures *******************************************
@@ -359,6 +376,10 @@ public class FXMLController implements Initializable {
         exif_country.setText(PictureViewModel.country.getValue());
         exif_iso.setText(PictureViewModel.iso.getValue());
         exif_caption.setText(PictureViewModel.caption.getValue());
+
+
+        //Photographermodel = Main.DATABASE.getPhotographerForPicture(PictureViewModel.photographerID.getValue());
+
         Logger.debug("Successfully updated ActiveImage.");
     }
 }
