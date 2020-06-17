@@ -138,6 +138,7 @@
                                                 <Label>Surname: </Label>
                                                 <Label>Birthday: </Label>
                                                 <Label>Notes: </Label>
+                                                <Label>Errors:</Label>
                                             </VBox>
 
                                             <VBox>
@@ -146,6 +147,7 @@
                                                 <TextField fx:id="newsurname" />
                                                 <TextField fx:id="newbirthday" />
                                                 <TextField fx:id="newcountry" />
+                                                <Label fx:id="NewPhotographerWrongValues"/>
 
                                                 <Button fx:id="SaveNewPhotographerButton">Save Photographer</Button>
 
@@ -180,17 +182,11 @@
                                                 </VBox>
                                                 <Button fx:id="savePhotographerInfo">Save Info</Button>
                                                 <Button fx:id="SetPhotographerForActivePicture">Set Photographer for active Picture</Button>
-
                                             </HBox>
-
                                         </AnchorPane>
-
                                         <ScrollPane hbarPolicy="NEVER" vbarPolicy="ALWAYS">
-
                                             <VBox fx:id="photographersScrollPaneVBox" />
-
                                         </ScrollPane>
-
                                     </SplitPane>
 
                                 </Tab>

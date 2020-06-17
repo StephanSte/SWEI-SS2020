@@ -100,6 +100,8 @@ public class FXMLController implements Initializable {
     public TextField newcountry;
     @FXML
     public Button SaveNewPhotographerButton;
+    @FXML
+    public Label NewPhotographerWrongValues;
 
     /* All Photographers */
      @FXML
@@ -214,18 +216,58 @@ public class FXMLController implements Initializable {
 
         SaveNewPhotographerButton.setOnAction(event -> {
             PhotographerModel photographer = new PhotographerModel();
+            ArrayList<String> Fhids;
+            //photographer.setFhid(newfhid.getText());
 
-            photographer.setFhid(newfhid.getText());
-            photographer.setName(newname.getText());
-            photographer.setSurname(newsurname.getText());
-            photographer.setBirthday(newbirthday.getText());
-            photographer.setCountry(newcountry.getText());
+            String Errormessage = "";
+            Fhids = Main.DATABASE.getPhotographerFhids();
+            Logger.debug(Fhids);
+            if(newfhid.getText().isEmpty() || Fhids.contains(newfhid.getText())){
+                Errormessage += "Fhid is empty or already exists";
+            }else {
+                photographer.setFhid(newfhid.getText());
+            }
 
-            Main.DATABASE.addNewPhotographer(photographer);
+            if(newname.getText().length() > 100){
+                Errormessage += "Length of name invalid";
+            }else{
+                photographer.setName(newname.getText());
+            }
 
-            PhotographerViewModel pvm = new PhotographerViewModel(photographer);
-            pvm.updatePhotographerProperties();
-            displayPhotographers();
+            if (newsurname.getText().isEmpty() || newsurname.getText().length() > 50){
+                Errormessage +=  "\n Surname must be set and length can`t be longer than 50 characters";
+            }else{
+                photographer.setSurname(newsurname.getText());
+            }
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                String date = newbirthday.getText();
+                Date givenDate= new SimpleDateFormat("dd.MM.yyyy").parse(date);
+                Date localDate= java.sql.Timestamp.valueOf(now);
+                if (givenDate.after(localDate)){
+                    Errormessage += "\n Given Date is in the Future";
+                }else{
+                    photographer.setBirthday(newbirthday.getText());
+                }
+            } catch (ParseException ex) {
+                ex.printStackTrace();
+                Logger.debug("Failed to parse given date in handlePhotographerInfo");
+            }
+
+            if (Errormessage.isEmpty()){
+                photographer.setCountry(newcountry.getText());
+                NewPhotographerWrongValues.setText("Everything is alright!");
+                Main.DATABASE.addNewPhotographer(photographer);
+
+                PhotographerViewModel pvm = new PhotographerViewModel(photographer);
+                pvm.updatePhotographerProperties();
+                displayPhotographers();
+            }else{
+                NewPhotographerWrongValues.setText(Errormessage);
+            }
+            event.consume();
         });
 
         this.imgActive.fitWidthProperty().bind(this.imgActiveContainer.widthProperty());
