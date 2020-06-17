@@ -15,7 +15,6 @@ import java.sql.SQLException;
 
 
 public class Main extends Application {
-    public static final File PLACEHOLDER = new File("./src/main/resources/at/technikum_wien/if18b070/A.png");
     public static File BILDER = new File("./src/main/resources/at/technikum_wien/if18b070/bilder/");
     //DB here
     public static DBService DATABASE;

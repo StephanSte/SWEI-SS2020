@@ -36,14 +36,6 @@ public class FXMLController implements Initializable {
 
     /* Menu Bar */
     @FXML
-    public MenuBar topMenuBar;
-    @FXML
-    public MenuItem ChooseFile;
-    @FXML
-    public MenuItem getAllPhotographers;
-    @FXML
-    public MenuItem newPhotographer;
-    @FXML
     public TextField searchBar;
 
     /* Active Image */
@@ -75,7 +67,6 @@ public class FXMLController implements Initializable {
     public TextField exif_caption;
 
     /* Photographer */
-    public PhotographerViewModel photographerViewModel;
     @FXML
     public Text currentPicturefhid;
     @FXML
@@ -86,8 +77,6 @@ public class FXMLController implements Initializable {
     public Text currentPicturebirthday;
     @FXML
     public Text currentPicturecountry;
-    @FXML
-    public Button  UpdatePhotographerButton;
 
     /* New Photographer */
     @FXML
@@ -106,8 +95,6 @@ public class FXMLController implements Initializable {
     public Label NewPhotographerWrongValues;
 
     /* All Photographers */
-     @FXML
-     public Button updateInfo;
      @FXML
      public Tab preparePhotographer;
      @FXML
@@ -129,24 +116,17 @@ public class FXMLController implements Initializable {
     @FXML
     public Label PhotographerWrongValues;
 
-
     /* ScrollPane */
     @FXML
     public HBox imgScrollPaneHBox;
 
-
-    /* Random Label for HelloFX thingy*/
-    @FXML
-    private Label label;
 
     private ObservableList<PhotographerModel> ObservablePhotographerModel = FXCollections.observableArrayList();
     private ListView<PhotographerModel> ListViewPhotographerModel= new ListView<>();
 
     private PictureViewModel PictureViewModel;
     private PhotographerViewModel PhotographerViewModel;
-    private PhotographerModel Photographermodel;
     private List<PictureViewModel> ListofModels = new ArrayList<>();
-    private List<PhotographerViewModel> ListOfPhotographers;
     private ArrayList<String> photographerFhids = new ArrayList<>();
 
     //*****************************************Initialisation**************************************************************
@@ -194,10 +174,6 @@ public class FXMLController implements Initializable {
     //**************************************** Set and Update IPTC and Insert new Photographer ******************************************************
 
     private void prep(){
-        String javaVersion = System.getProperty("java.version");
-        String javafxVersion = System.getProperty("javafx.version");
-        //this.label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
-
         FileHandler fileHandler = new FileHandler();
         fileHandler.setAllPaths();
         searchBar.setOnKeyReleased(event -> {

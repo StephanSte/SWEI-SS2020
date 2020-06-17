@@ -4,6 +4,7 @@ import at.technikum_wien.if18b070.Models.PhotographerModel;
 import at.technikum_wien.if18b070.Models.PictureModel;
 
 import java.io.File;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,8 +20,8 @@ public interface DBServiceSupport {
     boolean updateIPTC(PictureModel model);
     boolean addPhotographerToPicture(String path, String fhid);
 
+
     PictureModel getPictureModelFromPath(String path);
-    //public PhotographerModel getPhotographerForImage(File image);
     Collection<PhotographerModel> getPhotographers();
     ArrayList<String> getPathsFromSearchString(String search);
     PhotographerModel getPhotographerFromFhid(String fhid);
