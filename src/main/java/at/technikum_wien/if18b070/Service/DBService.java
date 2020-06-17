@@ -15,19 +15,17 @@ public class DBService implements DBServiceSupport{
     private Connection conn;
     private Dictionary<String, PreparedStatement> preparedStatements = new Hashtable<>();
     
-    private static final String CREATE_PHOTOGRAPHER = "create table if not exists  photographer\n" +
+    private static final String CREATE_PHOTOGRAPHER = "create table if not exists photographer\n" +
             "(\n" +
             "    fhid     text\n" +
             "        constraint photographer_pk\n" +
             "            primary key,\n" +
-            "    name     text not null,\n" +
-            "    surname  text not null,\n" +
-            "    birthday date not null,\n" +
-            "    country  text not null\n" +
-            ");\n" +
-            "\n" +
-            "create unique index photographer_fhid_uindex\n" +
-            "    on photographer (fhid);";
+            "    name     String,\n" +
+            "    surname  String not null,\n" +
+            "    birthday date,\n" +
+            "    country  text\n" +
+            ");";
+
     private static final String CREATE_PICTURE = "create table if not exists picture\n" +
             "(\n" +
             "    path            text\n" +

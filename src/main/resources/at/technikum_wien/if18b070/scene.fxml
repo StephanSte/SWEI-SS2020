@@ -20,6 +20,7 @@
 <?import javafx.scene.text.Text?>
 <BorderPane id="rootPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.technikum_wien.if18b070.FXMLController">
     <top>
+
         <VBox>
             <MenuBar fx:id="topMenuBar">
                 <Menu text="File">
@@ -43,6 +44,7 @@
     </top>
 
     <center>
+
         <SplitPane dividerPositions="0.5" orientation="VERTICAL">
             <SplitPane dividerPositions="0.5">
                 <AnchorPane fx:id="imgActiveContainer" minHeight="100" minWidth="100">
@@ -152,20 +154,20 @@
                                     </ScrollPane>
                                 </Tab>
 
-                                <!-- All Photographers Tab -->
+                                <!-- All Photographers & Update Tab -->
                                 <Tab closable="false" text="All Photographers" fx:id="preparePhotographer">
                                     <SplitPane>
 
                                         <AnchorPane>
 
                                             <HBox>
-
                                                 <VBox>
                                                     <Label>FH-ID: </Label>
                                                     <Label>First Name: </Label>
                                                     <Label>Last Name: </Label>
                                                     <Label>Birthday: </Label>
                                                     <Label>Notes: </Label>
+                                                    <Label>Errors: </Label>
                                                 </VBox>
 
                                                 <VBox>
@@ -174,9 +176,11 @@
                                                     <TextField fx:id="surname" />
                                                     <TextField fx:id="birthday" />
                                                     <TextField fx:id="country" />
+                                                    <Label fx:id="PhotographerWrongValues"/>
                                                 </VBox>
                                                 <Button fx:id="savePhotographerInfo">Save Info</Button>
                                                 <Button fx:id="SetPhotographerForActivePicture">Set Photographer for active Picture</Button>
+
                                             </HBox>
 
                                         </AnchorPane>
