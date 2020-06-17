@@ -63,14 +63,120 @@ public class DBService implements DBServiceSupport{
     private static final String RETURN_PICTURE_BY_PATH = "SELECT * FROM picture WHERE path = ?";
     private static final String GETFHIDS = "SELECT fhid FROM photographer";
     private static final String GET_PHOTOGRAPHER_FROM_FHID = "SELECT * FROM PHOTOGRAPHER WHERE fhid = ?";
-    // selection by filename
-    private static final String SELECT_PATHS_BY_FILENAME = "SELECT path FROM pictures WHERE path LIKE ?";
-    // selection by EXIF
-    private static final String SELECT_PATHS_BY_CATEGORY = "SELECT path FROM pictures WHERE iptc_category LIKE ?";
-    private static final String SELECT_PATHS_BY_URGENCY = "SELECT path FROM pictures WHERE iptc_urgency LIKE ?";
-    private static final String SELECT_PATHS_BY_CITY = "SELECT path FROM pictures WHERE iptc_city LIKE ?";
-    private static final String SELECT_PATHS_BY_HEADLINE = "SELECT path FROM pictures WHERE iptc_headline LIKE ?";
     private static final String GET_SIZE_OF_PHOTOGRAPHER_TABLE = "SELECT count(fhid) FROM photographer";
+    // selection by filename
+    private static final String SELECT_PATHS_BY_FILENAME = "SELECT path FROM picture WHERE path LIKE ?";
+    // selection by EXIF
+    private static final String SELECT_PATHS_BY_CATEGORY = "SELECT path FROM picture WHERE iptc_category LIKE ?";
+    private static final String SELECT_PATHS_BY_URGENCY = "SELECT path FROM picture WHERE iptc_urgency LIKE ?";
+    private static final String SELECT_PATHS_BY_CITY = "SELECT path FROM picture WHERE iptc_city LIKE ?";
+    private static final String SELECT_PATHS_BY_HEADLINE = "SELECT path FROM picture WHERE iptc_headline LIKE ?";
+
+    private static final String SELECT_PATHS_BY_FILEFORMAT = "SELECT path FROM picture WHERE EXIF_fileformat LIKE ?";
+    private static final String SELECT_PATHS_BY_COUNTRY = "SELECT path FROM picture WHERE EXIF_country LIKE ?";
+    private static final String SELECT_PATHS_BY_ISO = "SELECT path FROM picture WHERE EXIF_iso LIKE ?";
+    private static final String SELECT_PATHS_BY_CAPTION = "SELECT path FROM picture WHERE EXIF_caption LIKE ?";
+
+    private static final String SELECT_PATHS_BY_PHOTOGRAPHER_FHID = "SELECT path FROM picture WHERE photographerID LIKE ?";
+    private static final String SELECT_PATHS_BY_PHOTOGRAPHER_NAME = "SELECT path FROM picture join photographer  WHERE name LIKE ? AND photographerID LIKE fhid";
+    private static final String SELECT_PATHS_BY_PHOTOGRAPHER_SURNAME = "SELECT path FROM picture join photographer WHERE surname LIKE ? AND photographerID LIKE fhid";
+    private static final String SELECT_PATHS_BY_PHOTOGRAPHER_BIRTHDAY = "SELECT path FROM picture join photographer  WHERE birthday LIKE ? AND photographerID LIKE fhid";
+    private static final String SELECT_PATHS_BY_PHOTOGRAPHER_COUNTRY = "SELECT path FROM picture join photographer  WHERE country LIKE ? AND photographerID LIKE fhid";
+
+    @Override
+    public ArrayList<String> getPathsFromSearchString(String search) {
+        try {
+            //**************************************************************************************
+            // look for filename
+            PreparedStatement stmt1 = conn.prepareStatement(SELECT_PATHS_BY_FILENAME);
+            stmt1.setString(1, "%" + search + "%");
+            // look for category
+            PreparedStatement stmt2 = conn.prepareStatement(SELECT_PATHS_BY_CATEGORY);
+            stmt2.setString(1, "%" + search + "%");
+            // look for urgency
+            PreparedStatement stmt3 = conn.prepareStatement(SELECT_PATHS_BY_URGENCY);
+            stmt3.setString(1, "%" + search + "%");
+            // look for city
+            PreparedStatement stmt4 = conn.prepareStatement(SELECT_PATHS_BY_CITY);
+            stmt4.setString(1, "%" + search + "%");
+            //look for headline
+            PreparedStatement stmt5 = conn.prepareStatement(SELECT_PATHS_BY_HEADLINE);
+            stmt5.setString(1, "%" + search + "%");
+            //**************************************************************************************
+            // look for filename
+            PreparedStatement stmt6 = conn.prepareStatement(SELECT_PATHS_BY_FILEFORMAT);
+            stmt6.setString(1, Main.BILDER + "%" + search + "%");
+            // look for category
+            PreparedStatement stmt7 = conn.prepareStatement(SELECT_PATHS_BY_COUNTRY);
+            stmt7.setString(1, "%" + search + "%");
+            // look for urgency
+            PreparedStatement stmt8 = conn.prepareStatement(SELECT_PATHS_BY_ISO);
+            stmt8.setString(1, "%" + search + "%");
+            // look for city
+            PreparedStatement stmt9 = conn.prepareStatement(SELECT_PATHS_BY_CAPTION);
+            stmt9.setString(1, "%" + search + "%");
+            //**************************************************************************************
+            // look for filename
+            PreparedStatement stmt10 = conn.prepareStatement(SELECT_PATHS_BY_PHOTOGRAPHER_FHID);
+            stmt10.setString(1, "%" + search + "%");
+            // look for category
+            PreparedStatement stmt11 = conn.prepareStatement(SELECT_PATHS_BY_PHOTOGRAPHER_NAME);
+            stmt11.setString(1, "%" + search + "%");
+            // look for urgency
+            PreparedStatement stmt12 = conn.prepareStatement(SELECT_PATHS_BY_PHOTOGRAPHER_SURNAME);
+            stmt12.setString(1, "%" + search + "%");
+            // look for city
+            PreparedStatement stmt13 = conn.prepareStatement(SELECT_PATHS_BY_PHOTOGRAPHER_BIRTHDAY);
+            stmt13.setString(1, "%" + search + "%");
+            PreparedStatement stmt14 = conn.prepareStatement(SELECT_PATHS_BY_PHOTOGRAPHER_COUNTRY);
+            stmt14.setString(1, "%" + search + "%");
+
+            /* result set containing all paths matching search string in each columns
+            HashSet -> no duplicates :) */
+            HashSet<String> result = new HashSet<>(Collections.emptySet());
+
+            result.addAll(getPathsFromResultSet(stmt1.executeQuery()));
+            //
+            Logger.debug(result);
+            stmt1.close();
+            result.addAll(getPathsFromResultSet(stmt2.executeQuery()));
+            stmt2.close();
+            result.addAll(getPathsFromResultSet(stmt3.executeQuery()));
+            stmt3.close();
+            result.addAll(getPathsFromResultSet(stmt4.executeQuery()));
+            stmt4.close();
+            result.addAll(getPathsFromResultSet(stmt5.executeQuery()));
+            stmt5.close();
+
+            result.addAll(getPathsFromResultSet(stmt6.executeQuery()));
+            stmt6.close();
+            result.addAll(getPathsFromResultSet(stmt7.executeQuery()));
+            stmt7.close();
+            result.addAll(getPathsFromResultSet(stmt8.executeQuery()));
+            stmt8.close();
+            result.addAll(getPathsFromResultSet(stmt9.executeQuery()));
+            stmt9.close();
+
+            result.addAll(getPathsFromResultSet(stmt10.executeQuery()));
+            stmt10.close();
+            result.addAll(getPathsFromResultSet(stmt11.executeQuery()));
+            stmt11.close();
+            result.addAll(getPathsFromResultSet(stmt12.executeQuery()));
+            stmt12.close();
+            result.addAll(getPathsFromResultSet(stmt13.executeQuery()));
+            stmt13.close();
+            result.addAll(getPathsFromResultSet(stmt14.executeQuery()));
+            stmt14.close();
+
+            Logger.debug("Successfully retrieved picture paths from database.");
+            return new ArrayList<>(result);
+        } catch (SQLException e) {
+            Logger.debug("Failed to retrieve picture paths from database.");
+            Logger.trace(e);
+            return null;
+        }
+    }
+
 
     private static final String DELETE_DATABASE = "DELETE FROM picture";
 
@@ -318,7 +424,7 @@ public class DBService implements DBServiceSupport{
                 Liste.add(pm);
 
             }
-            Logger.debug("Liste:" + Liste);
+            //Logger.debug("Liste:" + Liste);
             stmt.close();
             return Liste;
 
@@ -363,48 +469,7 @@ public class DBService implements DBServiceSupport{
             return null;
         }
     }
-    @Override
-    public ArrayList<String> getPathsFromSearchString(String search) {
-        try {
-            // look for filename
-            PreparedStatement stmt1 = conn.prepareStatement(SELECT_PATHS_BY_FILENAME);
-            stmt1.setString(1, Main.BILDER + "%" + search + "%");
-            // look for category
-            PreparedStatement stmt2 = conn.prepareStatement(SELECT_PATHS_BY_CATEGORY);
-            stmt2.setString(1, "%" + search + "%");
-            // look for urgency
-            PreparedStatement stmt3 = conn.prepareStatement(SELECT_PATHS_BY_URGENCY);
-            stmt3.setString(1, "%" + search + "%");
-            // look for city
-            PreparedStatement stmt4 = conn.prepareStatement(SELECT_PATHS_BY_CITY);
-            stmt4.setString(1, "%" + search + "%");
-            //look for headline
-            PreparedStatement stmt5 = conn.prepareStatement(SELECT_PATHS_BY_HEADLINE);
-            stmt5.setString(1, "%" + search + "%");
 
-            /* result set containing all paths matching search string in each columns
-            HashSet -> no duplicates :) */
-            HashSet<String> result = new HashSet<>(Collections.emptySet());
-
-            result.addAll(getPathsFromResultSet(stmt1.executeQuery()));
-            stmt1.close();
-            result.addAll(getPathsFromResultSet(stmt2.executeQuery()));
-            stmt2.close();
-            result.addAll(getPathsFromResultSet(stmt3.executeQuery()));
-            stmt3.close();
-            result.addAll(getPathsFromResultSet(stmt4.executeQuery()));
-            stmt4.close();
-            result.addAll(getPathsFromResultSet(stmt5.executeQuery()));
-            stmt5.close();
-
-            Logger.debug("Successfully retrieved picture paths from database.");
-            return new ArrayList<>(result);
-        } catch (SQLException e) {
-            Logger.debug("Failed to retrieve picture paths from database.");
-            Logger.trace(e);
-            return null;
-        }
-    }
     private ArrayList<String> getPathsFromResultSet(ResultSet rs) throws SQLException {
         ArrayList<String> results = new ArrayList<>();
         while(rs.next()) {

@@ -43,6 +43,8 @@ public class FXMLController implements Initializable {
     public MenuItem getAllPhotographers;
     @FXML
     public MenuItem newPhotographer;
+    @FXML
+    public TextField searchBar;
 
     /* Active Image */
     @FXML
@@ -179,7 +181,7 @@ public class FXMLController implements Initializable {
     private void initializeActivePicture() {
         // set activePictureViewModel
 
-        Logger.debug(ListofModels.get(0).path.getValue());
+        //Logger.debug(ListofModels.get(0).path.getValue());
         PictureViewModel = new PictureViewModel(Main.DATABASE.getPictureModelFromPath(ListofModels.get(0).path.getValue()));
 
         //PictureViewModel = new PictureViewModel(new PictureModel(ListofModels.get(0).path.getValue()));
@@ -196,10 +198,12 @@ public class FXMLController implements Initializable {
         String javafxVersion = System.getProperty("javafx.version");
         //this.label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
 
-        /*searchBar.setOnKeyReleased(event -> {
+        FileHandler fileHandler = new FileHandler();
+        fileHandler.setAllPaths();
+        searchBar.setOnKeyReleased(event -> {
             loadAllPictures();
             fillScrollPane();
-        });*/
+        });
 
         SaveIPTCButton.setOnAction(event -> {
             PictureModel pm = PictureViewModel.getPictureModel();
@@ -277,12 +281,23 @@ public class FXMLController implements Initializable {
 
     //**************************************** loadAllPictures and Populate Database ******************************************************
     private void loadAllPictures(){
+        ListofModels.clear();
+        ArrayList<String> Liste;
+        if (!searchBar.getText().isEmpty()){
+            Liste = Main.DATABASE.getPathsFromSearchString(searchBar.getText());
 
-        for(String path: new FileHandler().getAllPaths()){
-            ListofModels.add(new PictureViewModel(new PictureModel(path)));
+            Logger.debug("Das ist die Liste: ", Liste);
+            for(String path: Liste){
+                ListofModels.add(new PictureViewModel(new PictureModel(path)));
+            }
+        }else {
+            for(String path: new FileHandler().getAllPaths()){
+                ListofModels.add(new PictureViewModel(new PictureModel(path)));
+            }
         }
         Logger.debug("Successfully loaded all Pictures.");
     }
+
     //**************************************** Display the Photographers in the DB and on the Pane ******************************************************
     private void loadPhotograherFhids(){
         photographerFhids.clear();
@@ -423,8 +438,6 @@ public class FXMLController implements Initializable {
         }
         Logger.debug("Successfully filled Scrollpane.");
     }
-
-
 
     //*********************** update Active Picture that is displayed *************************************
     private void updateActiveImage(){

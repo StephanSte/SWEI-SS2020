@@ -16,7 +16,7 @@ import java.sql.SQLException;
 
 public class Main extends Application {
     public static final File PLACEHOLDER = new File("./src/main/resources/at/technikum_wien/if18b070/A.png");
-    public static File BILDER = new File("./src/main/resources/at/technikum_wien/if18b070/bilder");
+    public static File BILDER = new File("./src/main/resources/at/technikum_wien/if18b070/bilder/");
     //DB here
     public static DBService DATABASE;
 
@@ -27,7 +27,7 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
 
-        stage.setTitle("JavaFX and Gradle");
+        stage.setTitle("Fotodatenbank");
         stage.setScene(scene);
         stage.show();
     }

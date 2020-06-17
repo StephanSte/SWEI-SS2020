@@ -8,13 +8,14 @@ import java.io.FilenameFilter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import org.tinylog.Logger;
 
 
 public class FileHandler {
 
-    private List<PictureViewModel> ListofModels = new ArrayList<PictureViewModel>();
+    private List<PictureViewModel> ListofModels = new ArrayList<>();
     private PictureModel picture;
 
     // File representing the folder that you select using a FileChooser
@@ -41,7 +42,7 @@ public class FileHandler {
         return (false);
     };
 
-    public List<String> getAllPaths(){
+    public List<String> setAllPaths(){
 
         ArrayList<String> paths = new ArrayList<>();
 
@@ -54,7 +55,7 @@ public class FileHandler {
                 e.printStackTrace();
             }
 
-            for (final File f : dir.listFiles(IMAGE_FILTER)) {
+            for (final File f : Objects.requireNonNull(dir.listFiles(IMAGE_FILTER))) {
                 //add path to list
                 paths.add(f.getPath());
 
@@ -81,145 +82,132 @@ public class FileHandler {
             }
         }
         return paths;
+
+    }
+
+    public List<String> getAllPaths(){
+        ArrayList<String> paths = new ArrayList<>();
+        for (final File f : Objects.requireNonNull(dir.listFiles(IMAGE_FILTER))) {
+            //add path to list
+            paths.add(f.getPath());
+        }
+        return paths;
     }
 
     //simple generation of "Random" data
 
     private String getRandomFileFormat(){
-        String result = "";
+        String result;
 
         if (Number <= 33){
             result = "jpg";
             return result;
-        }else if(Number <= 66 && Number > 33){
+        }else if(Number <= 66){
             result = "png";
             return result;
-        }else if(Number > 66){
+        }else{
             result = "gif";
             return result;
-        }else{
-            result = "somethingWrong";
         }
-        return result;
     }
     private String getRandomCountry(){
-        String result = "";
+        String result;
 
         if (Number <= 33){
             result = "Austria";
             return result;
-        }else if(Number <= 66 && Number > 33){
+        }else if(Number <= 66){
             result = "Germany";
             return result;
-        }else if(Number > 66){
+        }else {
             result = "Buxdehude";
             return result;
-        }else{
-            result = "SomethingWrong";
         }
-        return result;
+
     }
     private String getRandomIso(){
-        String result = "";
+        String result;
 
         if (Number <= 33){
             result = "Fuenfzig";
             return result;
-        }else if(Number <= 66 && Number > 33){
+        }else if(Number <= 66){
             result = "Hundert";
             return result;
-        }else if(Number > 66){
+        }else {
             result = "Tausend";
             return result;
-        }else{
-            result = "SomethingWrong";
         }
-        return result;
 
     }
     private String getRandomCaption(){
-        String result = "";
+        String result;
 
         if (Number <= 33){
             result = "Bli";
             return result;
-        }else if(Number <= 66 && Number > 33){
+        }else if(Number <= 66){
             result = "Bla";
             return result;
-        }else if(Number > 66){
+        }else {
             result = "Blub";
             return result;
-        }else{
-            result = "SomethingWrong";
         }
-        return result;
     }
     private String getRandomCategory(){
-        String result = "";
+        String result;
 
         if (Number <= 33){
             result = "Blumen";
             return result;
-        }else if(Number <= 66 && Number > 33){
+        }else if(Number <= 66){
             result = "Haus";
             return result;
-        }else if(Number > 66){
+        }else {
             result = "Landschaft";
             return result;
-        }else{
-            result = "SomethingWrong";
         }
-        return result;
     }
     private String getRandomUrgency(){
-        String result = "";
+        String result;
 
         if (Number <= 33){
             result = "very";
             return result;
-        }else if(Number <= 66 && Number > 33){
+        }else if(Number <= 66){
             result = "alot";
             return result;
-        }else if(Number > 66){
+        }else {
             result = "three";
             return result;
-        }else{
-            result = "SomethingWrong";
         }
-        return result;
     }
     private String getRandomCity(){
-        String result = "";
+        String result;
 
         if (Number <= 33){
             result = "Bregenz";
             return result;
-        }else if(Number > 33 && Number <= 66 ){
+        }else if(Number <= 66){
             result = "Vienna";
             return result;
-        }else if(Number > 66){
+        }else {
             result = "Graz";
             return result;
-        }else{
-            result = "Europe";
         }
-        return result;
     }
     private String getRandomHeadline(){
-        String result = "";
+        String result;
 
         if (Number <= 33){
             result = "This is a Headline";
             return result;
-        }else if(Number <= 66 && Number > 33){
+        }else if(Number <= 66){
             result = "This is another headline";
             return result;
-        }else if(Number > 66){
+        }else {
             result = "third Headline";
             return result;
-        }else{
-            result = "SomethingWrong";
         }
-        return result;
     }
 }
