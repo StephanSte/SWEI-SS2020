@@ -17,7 +17,6 @@
 
 <?import javafx.scene.control.TextField?>
 
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.text.Text?>
 <BorderPane id="rootPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.technikum_wien.if18b070.FXMLController">
     <top>
@@ -104,92 +103,97 @@
                     <!-- Photographer Tab -->
                     <Tab closable="false" text="Photographer">
                         <ScrollPane>
-                            <HBox>
+                            <TabPane>
+                                <!-- current Photographer -->
+                                <Tab  closable="false" text="Current Photographer">
+                                    <HBox>
+                                        <VBox>
+                                            <Label>FH-ID: </Label>
+                                            <Label>Name: </Label>
+                                            <Label>Surname: </Label>
+                                            <Label>Birthday: </Label>
+                                            <Label>Notes: </Label>
+                                        </VBox>
 
-                                <VBox>
-                                    <Label>FH-ID: </Label>
-                                    <Label>Name: </Label>
-                                    <Label>Surname: </Label>
-                                    <Label>Birthday: </Label>
-                                    <Label>Country: </Label>
-                                </VBox>
+                                        <VBox>
+                                            <Text fx:id="currentPicturefhid" />
+                                            <Text fx:id="currentPicturename" />
+                                            <Text fx:id="currentPicturesurname" />
+                                            <Text fx:id="currentPicturebirthday" />
+                                            <Text fx:id="currentPicturecountry" />
+                                        </VBox>
+                                    </HBox>
+                                </Tab>
 
-                                <VBox>
-                                    <Text fx:id="currentPicturefhid" />
-                                    <Text fx:id="currentPicturename" />
-                                    <Text fx:id="currentPicturesurname" />
-                                    <Text fx:id="currentPicturebirthday" />
-                                    <Text fx:id="currentPicturecountry" />
+                                <!-- New Photographer Tab -->
+                                <Tab closable="false" text="New Photographer">
+                                    <ScrollPane>
+                                        <HBox>
 
-                                </VBox>
-                            </HBox>
+                                            <VBox>
+                                                <Label>FH-ID: </Label>
+                                                <Label>Name: </Label>
+                                                <Label>Surname: </Label>
+                                                <Label>Birthday: </Label>
+                                                <Label>Notes: </Label>
+                                            </VBox>
+
+                                            <VBox>
+                                                <TextField fx:id="newfhid" />
+                                                <TextField fx:id="newname" />
+                                                <TextField fx:id="newsurname" />
+                                                <TextField fx:id="newbirthday" />
+                                                <TextField fx:id="newcountry" />
+
+                                                <Button fx:id="SaveNewPhotographerButton">Save Photographer</Button>
+
+                                            </VBox>
+                                        </HBox>
+                                    </ScrollPane>
+                                </Tab>
+
+                                <!-- All Photographers Tab -->
+                                <Tab closable="false" text="All Photographers" fx:id="preparePhotographer">
+                                    <SplitPane>
+
+                                        <AnchorPane>
+
+                                            <HBox>
+
+                                                <VBox>
+                                                    <Label>FH-ID: </Label>
+                                                    <Label>First Name: </Label>
+                                                    <Label>Last Name: </Label>
+                                                    <Label>Birthday: </Label>
+                                                    <Label>Notes: </Label>
+                                                </VBox>
+
+                                                <VBox>
+                                                    <Text fx:id="fhid" />
+                                                    <TextField fx:id="name" />
+                                                    <TextField fx:id="surname" />
+                                                    <TextField fx:id="birthday" />
+                                                    <TextField fx:id="country" />
+                                                </VBox>
+                                                <Button fx:id="savePhotographerInfo">Save Info</Button>
+                                                <Button fx:id="SetPhotographerForActivePicture">Set Photographer for active Picture</Button>
+                                            </HBox>
+
+                                        </AnchorPane>
+
+                                        <ScrollPane hbarPolicy="NEVER" vbarPolicy="ALWAYS">
+
+                                            <VBox fx:id="photographersScrollPaneVBox" />
+
+                                        </ScrollPane>
+
+                                    </SplitPane>
+
+                                </Tab>
+                            </TabPane>
                         </ScrollPane>
                     </Tab>
 
-                    <!-- New Photographer Tab -->
-                    <Tab closable="false" text="New Photographer">
-                        <ScrollPane>
-                            <HBox>
-
-                                <VBox>
-                                    <Label>FH-ID: </Label>
-                                    <Label>Name: </Label>
-                                    <Label>Surname: </Label>
-                                    <Label>Birthday: </Label>
-                                    <Label>Country: </Label>
-                                </VBox>
-
-                                <VBox>
-                                    <TextField fx:id="newfhid" />
-                                    <TextField fx:id="newname" />
-                                    <TextField fx:id="newsurname" />
-                                    <TextField fx:id="newbirthday" />
-                                    <TextField fx:id="newcountry" />
-
-                                    <Button fx:id="SaveNewPhotographerButton">Save Photographer</Button>
-
-                                </VBox>
-                            </HBox>
-                        </ScrollPane>
-                    </Tab>
-                    <!-- All Photographers Tab -->
-                    <Tab closable="false" text="All Photographers" fx:id="preparePhotographer">
-                        <SplitPane orientation="HORIZONTAL">
-
-                            <AnchorPane>
-
-                                <HBox>
-
-                                    <VBox>
-                                        <Label>FH-ID: </Label>
-                                        <Label>First Name: </Label>
-                                        <Label>Last Name: </Label>
-                                        <Label>Birthday: </Label>
-                                        <Label>Country: </Label>
-                                    </VBox>
-
-                                    <VBox>
-                                        <Text fx:id="fhid" />
-                                        <TextField fx:id="name" />
-                                        <TextField fx:id="surname" />
-                                        <TextField fx:id="birthday" />
-                                        <TextField fx:id="country" />
-                                    </VBox>
-                                    <Button fx:id="savePhotographerInfo">Save Info</Button>
-                                    <Button fx:id="SetPhotographerForActivePicture">Set Photographer for active Picture</Button>
-                                </HBox>
-
-                            </AnchorPane>
-
-                            <ScrollPane hbarPolicy="NEVER" vbarPolicy="ALWAYS">
-
-                                <VBox fx:id="photographersScrollPaneVBox" />
-
-                            </ScrollPane>
-
-                        </SplitPane>
-
-                    </Tab>
                 </TabPane>
             </SplitPane>
             <ScrollPane hbarPolicy="ALWAYS" vbarPolicy="NEVER">
