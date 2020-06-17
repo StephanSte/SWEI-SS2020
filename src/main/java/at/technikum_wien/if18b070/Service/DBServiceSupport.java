@@ -2,20 +2,14 @@ package at.technikum_wien.if18b070.Service;
 
 import at.technikum_wien.if18b070.Models.PhotographerModel;
 import at.technikum_wien.if18b070.Models.PictureModel;
-
-import java.io.File;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 public interface DBServiceSupport {
     boolean addNewImage(PictureModel model);
-    boolean addIPTC(PictureModel model);
-    boolean addEXIF(PictureModel model);
     boolean addNewPhotographer(PhotographerModel model);
 
-    boolean updatePhotographerForImage(PictureModel model);
     boolean updatePhotographer(PhotographerModel model);
     boolean updateIPTC(PictureModel model);
     boolean addPhotographerToPicture(String path, String fhid);

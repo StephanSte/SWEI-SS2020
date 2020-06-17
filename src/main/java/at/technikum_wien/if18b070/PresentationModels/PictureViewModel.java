@@ -1,10 +1,8 @@
 package at.technikum_wien.if18b070.PresentationModels;
 
 import at.technikum_wien.if18b070.Models.PictureModel;
-import com.sun.javafx.css.CalculatedValue;
 import javafx.beans.property.SimpleStringProperty;
 
-import java.io.File;
 
 
 public class PictureViewModel {

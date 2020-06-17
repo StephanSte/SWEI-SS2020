@@ -1,10 +1,5 @@
 package at.technikum_wien.if18b070.Models;
 
-import at.technikum_wien.if18b070.Main;
-import javafx.scene.image.Image;
-
-import javax.imageio.plugins.tiff.ExifGPSTagSet;
-
 public class PhotographerModel {
     private String fhid;
     public String name;
@@ -24,7 +19,6 @@ public class PhotographerModel {
         this.birthday = "";
         this.country = "";
     }
-    public PhotographerModel(String fhid) { this.setFhid(fhid); }
 
     public String getFhid() { return fhid; }
 

@@ -1,7 +1,6 @@
 package at.technikum_wien.if18b070.PresentationModels;
 
 import at.technikum_wien.if18b070.Models.PhotographerModel;
-import at.technikum_wien.if18b070.Models.PictureModel;
 import javafx.beans.property.SimpleStringProperty;
 
 public class PhotographerViewModel {

@@ -11,7 +11,6 @@ import org.tinylog.Logger;
 
 
 public class DBService implements DBServiceSupport{
-    private static DBService instance;
     private Connection conn;
     private Dictionary<String, PreparedStatement> preparedStatements = new Hashtable<>();
 
@@ -130,38 +129,7 @@ public class DBService implements DBServiceSupport{
             return false;
         }
     }
-    @Override
-    public boolean addIPTC(PictureModel picture){
-        try{
-            PreparedStatement statement = conn.prepareStatement(INSERT_IPTC);
-            statement.setString(1,picture.getCatergory());
-            statement.setString(2,picture.getUrgency());
-            statement.setString(3,picture.getCity());
-            statement.setString(4,picture.getHeadline());
 
-            return statement.execute();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    @Override
-    public boolean addEXIF(PictureModel picture){
-        try{
-            PreparedStatement statement = conn.prepareStatement(INSERT_EXIF);
-            statement.setString(1,picture.getFileformat());
-            statement.setString(2,picture.getCountry());
-            statement.setString(3,picture.getIso());
-            statement.setString(4,picture.getCaption());
-
-            return statement.execute();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
     @Override
     public boolean addNewPhotographer(PhotographerModel model) {
         try{
@@ -194,19 +162,6 @@ public class DBService implements DBServiceSupport{
         }
     }
 
-    @Override
-    public boolean updatePhotographerForImage(PictureModel picture) {
-        try{
-            PreparedStatement statement = conn.prepareStatement(UPDATE_PHOTOGRAPHER_FOR_IMAGE);
-            statement.setString(1,picture.getPath());
-            statement.setString(2,picture.getPhotographerID());
-            return statement.execute();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
     @Override
     public boolean updatePhotographer(PhotographerModel model) {
         try{
