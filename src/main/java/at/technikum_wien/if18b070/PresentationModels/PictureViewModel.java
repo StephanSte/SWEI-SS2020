@@ -4,7 +4,10 @@ import at.technikum_wien.if18b070.Models.PictureModel;
 import javafx.beans.property.SimpleStringProperty;
 
 
-
+/**
+ * Das PictureViewModel beinhaltet alle Simple _ Properties von einem PictureModel und hat get und set beutzerrechte auf das
+ * darunterliegende PictureModel
+ */
 public class PictureViewModel {
 
     public PictureModel picture;
@@ -53,7 +56,9 @@ public class PictureViewModel {
         this.picture = picture;
     }
 
-    //update after editing a picture
+    /**
+     * Diese Funktion updatet die Werte des momentan benutzten PictureModels
+      */
     public void updateProperties(){
         //Set new path
         path.set(picture.getPath());

@@ -3,6 +3,10 @@ package at.technikum_wien.if18b070.PresentationModels;
 import at.technikum_wien.if18b070.Models.PhotographerModel;
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * Das PhotographerViewModel beinhaltet alle Simple _ Properties von einem PhotographerModel und hat get und set beutzerrechte auf das
+ * darunterliegende PhotographerModel
+ */
 public class PhotographerViewModel {
     private PhotographerModel Photographer;
     //

@@ -1,5 +1,8 @@
 package at.technikum_wien.if18b070.Models;
 
+/**
+ * Das PhotographerModel hält alle Informationen eines Photographers und hat get und set access auf jedes Feld
+ */
 public class PhotographerModel {
     private String fhid;
     public String name;

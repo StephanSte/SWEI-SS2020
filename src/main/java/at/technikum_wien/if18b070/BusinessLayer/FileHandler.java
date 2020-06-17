@@ -42,6 +42,11 @@ public class FileHandler {
         return (false);
     };
 
+    /**
+     * erkennt Bilder aus gegebenen Ordner und erstellt ein neues Picture Model für jeden Pfad. Speichert alle Pfade in einer ArrayList
+     * und gibt diese zurück. Befüllt das PictureModel mit "random" Werten und fügt diese in die Datenbank hinzu.
+     * @return
+     */
     public List<String> setAllPaths(){
 
         ArrayList<String> paths = new ArrayList<>();
@@ -85,6 +90,10 @@ public class FileHandler {
 
     }
 
+    /**
+     * Lädt die Pfade aller Bilder im festgelegten Ordner in eine Liste und gibt diese zurück
+     * @return
+     */
     public List<String> getAllPaths(){
         ArrayList<String> paths = new ArrayList<>();
         for (final File f : Objects.requireNonNull(dir.listFiles(IMAGE_FILTER))) {

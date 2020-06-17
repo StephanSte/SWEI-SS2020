@@ -12,7 +12,6 @@ import org.tinylog.Logger;
 
 public class DBService implements DBServiceSupport{
     private Connection conn;
-    private Dictionary<String, PreparedStatement> preparedStatements = new Hashtable<>();
 
     //create
     private static final String CREATE_PHOTOGRAPHER = "create table if not exists photographer\n" +
@@ -82,13 +81,15 @@ public class DBService implements DBServiceSupport{
     //delete
     private static final String DELETE_DATABASE = "DELETE FROM picture";
 
-
+    /**
+     * Startet die DB verbindung
+     * @throws SQLException
+     */
     public DBService() throws SQLException {
         try {
             conn = DriverManager.getConnection("jdbc:sqlite:SWEIDB.db");
             Logger.debug("Successfully established SQLite database connection.");
 
-            //initializeDatabase();
         }catch (SQLException e){
             Logger.debug("Failed to establish SQLite database connection.");
             Logger.trace(e);
@@ -108,6 +109,11 @@ public class DBService implements DBServiceSupport{
         stmt.close();
     }
 
+    /**
+     * Fügt ein neues Bild zur Datenbank hinzu
+     * @param picture das picturemodel das die in die Datenbank zu speichernden Daten beinhaltet
+     * @return
+     */
     @Override
     public boolean addNewImage(PictureModel picture){
         try{
@@ -130,6 +136,11 @@ public class DBService implements DBServiceSupport{
         }
     }
 
+    /**
+     * Fügt einen neuen Photographen zur Datenbank hinzu
+     * @param model das PhotographerModel das die in die Datenbank zu speichernden Daten beinhaltet
+     * @return
+     */
     @Override
     public boolean addNewPhotographer(PhotographerModel model) {
         try{
@@ -146,6 +157,13 @@ public class DBService implements DBServiceSupport{
             return false;
         }
     }
+
+    /**
+     * Fügt den mitgegebenen Fotographen zum gewünschten Bild als macher des Bildes hinzu
+     * @param path der Pfad des Bildes
+     * @param fhid die FH-ID des Fotographen
+     * @return
+     */
     @Override
     public boolean addPhotographerToPicture(String path, String fhid){
         try{
@@ -162,6 +180,11 @@ public class DBService implements DBServiceSupport{
         }
     }
 
+    /**
+     * Ersetzt die Datenbankdaten mit denen vom Mitgegebenen model
+     * @param model PhotographenModel das zum tragen der Daten erstelt wurde
+     * @return
+     */
     @Override
     public boolean updatePhotographer(PhotographerModel model) {
         try{
@@ -180,6 +203,12 @@ public class DBService implements DBServiceSupport{
             return false;
         }
     }
+
+    /**
+     * Übergibt ein Model das IPTC Daten enthält und aktualisiert die DB mit den neuen mitgegebenen werten
+     * @param model PictureModel als Datenspeicher
+     * @return
+     */
     @Override
     public boolean updateIPTC(PictureModel model){
         try{
@@ -197,6 +226,10 @@ public class DBService implements DBServiceSupport{
         }
     }
 
+    /**
+     * Sucht nach allen vorhandenen FHIDs
+     * @return
+     */
     @Override
     public ArrayList<String> getPhotographerFhids(){
         try{
@@ -212,6 +245,13 @@ public class DBService implements DBServiceSupport{
         }
         return null;
     }
+
+    /**
+     * Sucht den Photographen derm gegebenen FHID und erstellt ein neues Photographermodel in dem die Daten des
+     * Photographen gespeichert und returend werden
+     * @param fhid
+     * @return
+     */
     @Override
     public PhotographerModel getPhotographerFromFhid(String fhid){
         try{
@@ -236,6 +276,10 @@ public class DBService implements DBServiceSupport{
         return null;
     }
 
+    /**
+     * Zählt wie viele FHIDs in der Datenbank stehen und gibt die Anzahl zurück
+     * @return
+     */
     public int getSizeOfPhotograherTable(){
         try {
             PreparedStatement statement = conn.prepareStatement(GET_SIZE_OF_PHOTOGRAPHER_TABLE);
@@ -256,6 +300,10 @@ public class DBService implements DBServiceSupport{
         }
     }
 
+    /**
+     * Gibt alle Photographen als PhotographerModel der Datrenbank in Form einer ArrayList zurück
+     * @return
+     */
     @Override
     public ArrayList<PhotographerModel> getPhotographers() {
         String fhid = null;
@@ -289,6 +337,12 @@ public class DBService implements DBServiceSupport{
             return null;
         }
     }
+
+    /**
+     * Erstellt ein Picturemodel für das Bild das in der Datenbank mit dem Pfad gefundn wurde
+     * @param path Der Pfad des gesuchten Bildes
+     * @return
+     */
     @Override
     public PictureModel getPictureModelFromPath(String path) {
         try {
@@ -333,6 +387,11 @@ public class DBService implements DBServiceSupport{
         return results;
     }
 
+    /**
+     * Gibt Die Pfade aller Bilder zurück die das gesuchte search Wort/Buchstaben in einem DB Feld stehen haben
+     * @param search die Wörter/Buchstaben die in der Suchleiste stehen
+     * @return
+     */
     @Override
     public ArrayList<String> getPathsFromSearchString(String search) {
         try {
@@ -427,6 +486,10 @@ public class DBService implements DBServiceSupport{
         }
     }
 
+    /**
+     * Löscht die Datenbank
+     * @throws SQLException
+     */
     @Override
     public void DeleteDatabase() throws SQLException {
         Statement stmt = conn.createStatement();
@@ -434,7 +497,9 @@ public class DBService implements DBServiceSupport{
         stmt.close();
     }
 
-
+    /**
+     * macht derzeit nichts könnte zum nicht forcefullen schließen der DB verwendet werden
+     */
     @Override
     public void close() {
 

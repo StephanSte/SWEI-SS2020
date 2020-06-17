@@ -16,6 +16,11 @@ public class Main extends Application {
     //DB here
     public static DBService DATABASE;
 
+    /**
+     * Setzt die Scene und startet sie
+     * @param stage die Stage
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("scene.fxml"));
@@ -28,6 +33,11 @@ public class Main extends Application {
         stage.show();
     }
 
+    /**
+     * Startet die Datenbank und launched das Programm
+     * @param args
+     * @throws SQLException
+     */
     public static void main(String[] args) throws SQLException {
         DATABASE = new DBService();
         launch(args);

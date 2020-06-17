@@ -124,11 +124,15 @@ public class FXMLController implements Initializable {
     private List<PictureViewModel> ListofModels = new ArrayList<>();
     private ArrayList<String> photographerFhids = new ArrayList<>();
 
-    //*****************************************Initialisation**************************************************************
+    /**
+     * inizialisiert Prep Funktion (inizialisiert SaveButtons und Search Bar), lädt alle Bilder, PhotographerIds, stellt
+     * Photographen dar und Inizialisert activen Photographen.
+     * @param url Die Url
+     * @param rb benötigtes Resource Budle
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         prep();
-        initializeMenuBar();
         loadAllPictures();
         //for nothing atm
 
@@ -148,10 +152,6 @@ public class FXMLController implements Initializable {
 
     }
 
-    private void initializeMenuBar(){
-        //this.newPhotographer.setOnAction(this::handleNewPhotographer);
-        //this.getAllPhotographers.setOnAction(this::handleGetAllPhotographers);
-    }
 
     private void initializeActivePicture() {
         // set activePictureViewModel

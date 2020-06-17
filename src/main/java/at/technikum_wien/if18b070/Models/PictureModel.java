@@ -1,5 +1,8 @@
 package at.technikum_wien.if18b070.Models;
 
+/**
+ * Das PictureModel hält alle Informationen eines Bildes und hat get und set access auf jedes Feld
+ */
 public class PictureModel {
     //picture
     private String path;
